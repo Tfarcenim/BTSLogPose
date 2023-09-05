@@ -1,4 +1,4 @@
-package com.yourname.modid.mixin;
+package tfar.btslogpose.mixin;
 
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.Logger;
