@@ -13,8 +13,8 @@ public class BTSPing {
         this.color = color;
     }
 
-    public static BTSPing of(BlockPos pos, int height) {
-        return new BTSPing(pos,height);
+    public static BTSPing of(BlockPos pos, int color) {
+        return new BTSPing(pos,color);
     }
 
     public BlockPos getPos() {

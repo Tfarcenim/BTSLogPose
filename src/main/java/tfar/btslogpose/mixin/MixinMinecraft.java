@@ -18,7 +18,7 @@ public abstract class MixinMinecraft {
     @Shadow
     private boolean fullscreen;
 
-    @Overwrite
+    @Overwrite(remap = false)
     private void createDisplay() throws LWJGLException {
         Display.setResizable(true);
         Display.setTitle("MyCustomTitle");

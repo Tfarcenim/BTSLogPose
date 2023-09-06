@@ -1,5 +1,7 @@
 package tfar.btslogpose.world;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -8,6 +10,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import tfar.btslogpose.BTSLogPose;
+import tfar.btslogpose.net.PacketHandler;
+import tfar.btslogpose.net.S2CBTSPingPacket;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +30,7 @@ public class BTSPingSavedData extends WorldSavedData {
         super(ID);
     }
 
-    public List<BTSPing> getPillars() {
+    public List<BTSPing> getPings() {
         return btsPings;
     }
 
@@ -60,14 +64,20 @@ public class BTSPingSavedData extends WorldSavedData {
         return compound;
     }
 
-    public void addPing(BTSPing ping) {
+    public void addPing(EntityPlayerMP player,BTSPing ping) {
         btsPings.add(ping);
+        PacketHandler.sendPacketToClient(new S2CBTSPingPacket(btsPings), player);
         markDirty();
     }
 
     public void removePing(BTSPing ping) {
         btsPings.remove(ping);
         markDirty();
+    }
+
+    @Override
+    public void markDirty() {
+        super.markDirty();
     }
 
     public static BTSPingSavedData getOrCreate(World world) {
