@@ -2,7 +2,6 @@ package tfar.btslogpose.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -11,7 +10,6 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import tfar.btslogpose.BTSLogPose;
 import tfar.btslogpose.world.BTSPing;
 
 import java.util.ArrayList;
@@ -36,8 +34,8 @@ public class BTSLogPoseClient {
 
     public static void renderTooltip3D(Minecraft mc, BTSPing ping,double partialTicks) {
         BlockPos pos = ping.getPos();
-        int outline1 = ping.getColor();
-        Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/ping_blue.png"));
+        ResourceLocation color = ping.getTex();
+        Minecraft.getMinecraft().getTextureManager().bindTexture(color);
         double xpos = mc.getRenderManager().viewerPosX - pos.getX();
         double ypos = mc.getRenderManager().viewerPosY - pos.getY();
         double zpos = mc.getRenderManager().viewerPosZ - pos.getZ();

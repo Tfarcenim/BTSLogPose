@@ -7,12 +7,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import tfar.btslogpose.command.BTSLogPoseCommand;
+import tfar.btslogpose.command.BTSPingCommand;
 import tfar.btslogpose.net.PacketHandler;
-import tfar.btslogpose.net.S2CBTSPingPacket;
 import tfar.btslogpose.world.BTSPingSavedData;
-
-import java.util.ArrayList;
 
 @Mod(modid = BTSLogPose.MOD_ID)
 @Mod.EventBusSubscriber
@@ -32,17 +29,18 @@ public class BTSLogPose {
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent evt)
     {
-        evt.registerServerCommand(new BTSLogPoseCommand());
+        evt.registerServerCommand(new BTSPingCommand());
     }
 
     @SubscribeEvent
     public static void login(PlayerEvent.PlayerLoggedInEvent e) {
         BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(e.player.world);
-        PacketHandler.sendPacketToClient(new S2CBTSPingPacket(btsPingSavedData.getPings()),(EntityPlayerMP) e.player);
+        btsPingSavedData.sendPings((EntityPlayerMP) e.player);
     }
 
     @SubscribeEvent
     public static void logout(PlayerEvent.PlayerLoggedOutEvent e) {
-        PacketHandler.sendPacketToClient(new S2CBTSPingPacket(new ArrayList<>()),(EntityPlayerMP) e.player);
+        BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(e.player.world);
+        btsPingSavedData.clearPings((EntityPlayerMP) e.player);
     }
 }

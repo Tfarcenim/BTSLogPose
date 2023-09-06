@@ -2,7 +2,6 @@ package tfar.btslogpose.net;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -28,7 +27,7 @@ public class S2CBTSPingPacket implements IMessage {
   public void fromBytes(ByteBuf buf) {
     int size = buf.readInt();
     for( int i = 0; i< size;i++) {
-      pings.add(BTSPing.of(new BlockPos(buf.readInt(), buf.readInt(),buf.readInt()),buf.readInt()));
+      pings.add(BTSPing.fromNetwork(buf));
     }
   }
 
@@ -36,11 +35,7 @@ public class S2CBTSPingPacket implements IMessage {
   public void toBytes(ByteBuf buf) {
     buf.writeInt(pings.size());
     for (BTSPing p : pings) {
-      BlockPos base = p.getPos();
-      buf.writeInt(base.getX());
-      buf.writeInt(base.getY());
-      buf.writeInt(base.getZ());
-      buf.writeInt(p.getColor());
+      p.toNetwork(buf);
     }
   }
 
