@@ -1,24 +1,36 @@
 package tfar.btslogpose.client;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import tfar.btslogpose.BTSLogPose;
 
-public class RegionScreen extends GuiScreen {
+import java.io.IOException;
 
-    private final String region;
-
-    public RegionScreen(String region) {
-        this.region = region;
-    }
+public class SelectRegionScreen extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        super.drawScreen(mouseX, mouseY, partialTicks);
         drawBackgroundLayer(partialTicks, mouseX, mouseY);
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
 
+    @Override
+    public void initGui() {
+        super.initGui();
+        int guiLeft = (this.width - 823/3) / 2;
+        int guiTop = (this.height - 585/3) / 2;
+        addButton(new GuiButton(0,guiLeft+56,guiTop+115,50,20,"test"));
+        addButton(new GuiButton(0,guiLeft+56 + 53,guiTop+115,50,20,"test"));
+        addButton(new GuiButton(0,guiLeft+56 + 53 * 2,guiTop+115,50,20,"test"));
+
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        super.actionPerformed(button);
     }
 
     @Override

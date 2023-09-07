@@ -25,7 +25,7 @@ public class BTSLogPoseClient {
     }
 
     public static void openRegionScreen() {
-        Minecraft.getMinecraft().displayGuiScreen(new RegionScreen());
+        Minecraft.getMinecraft().displayGuiScreen(new SelectRegionScreen());
     }
 
     @SubscribeEvent
