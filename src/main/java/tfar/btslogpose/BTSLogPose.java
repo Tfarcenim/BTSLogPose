@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import tfar.btslogpose.command.BTSPingCommand;
+import tfar.btslogpose.command.OpenRegionScreenCommand;
 import tfar.btslogpose.net.PacketHandler;
 import tfar.btslogpose.world.BTSPingSavedData;
 
@@ -30,6 +31,7 @@ public class BTSLogPose {
     public void serverStarting(FMLServerStartingEvent evt)
     {
         evt.registerServerCommand(new BTSPingCommand());
+        evt.registerServerCommand(new OpenRegionScreenCommand());
     }
 
     @SubscribeEvent

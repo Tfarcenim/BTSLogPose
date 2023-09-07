@@ -24,6 +24,10 @@ public class BTSLogPoseClient {
         BTSLogPoseClient.pings = pings;
     }
 
+    public static void openRegionScreen() {
+        Minecraft.getMinecraft().displayGuiScreen(new RegionScreen());
+    }
+
     @SubscribeEvent
     public static void renderPings(RenderWorldLastEvent e) {
         for (BTSPing ping : pings) {

@@ -17,6 +17,7 @@ public class PacketHandler {
     INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(BTSLogPose.MOD_ID);
     // Register messages which are sent from the client to the server here:
     INSTANCE.registerMessage(S2CBTSPingPacket.Handler.class, S2CBTSPingPacket.class, 0, Side.CLIENT);
+    INSTANCE.registerMessage(S2COpenRegionScreenPacket.Handler.class, S2COpenRegionScreenPacket.class, 1, Side.CLIENT);
   }
 
   public static void sendPacketToAllClientsInDimension(IMessage pkt, int dim) {
