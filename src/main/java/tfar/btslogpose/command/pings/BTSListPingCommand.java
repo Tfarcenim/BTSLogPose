@@ -1,53 +1,42 @@
-package tfar.btslogpose.command;
+package tfar.btslogpose.command.pings;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import tfar.btslogpose.BTSLogPose;
-import tfar.btslogpose.world.BTSPing;
 import tfar.btslogpose.world.BTSPingSavedData;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public class BTSTrackPingCommand extends CommandBase {
+public class BTSListPingCommand extends CommandBase {
 
     @Override
     public String getName() {
-        return "track";
+        return "list";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.btsping.track.usage";
+        return "commands.btsping.list.usage";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length > 0) {
-            int j = 0;
-            Entity entity = getEntity(server, sender, args[j++]);
-            String name = args[j++];
+        if (args.length == 0) {
             BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(sender.getEntityWorld());
-            BTSPing ping = btsPingSavedData.lookupByName(name);
-            if (ping != null) {
-                notifyCommandListener(sender, this, "commands." + BTSLogPose.MOD_ID + ".btsping.track.success.coordinates", entity.getName());
-                btsPingSavedData.track(ping,(EntityPlayerMP) entity);
-            }
+            Set<String> names = btsPingSavedData.getNames();
+            String list = String.join(",", names);
+            notifyCommandListener(sender, this, list);
         }
     }
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args.length == 1) {
-            return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
-        } else if (args.length == 2) {
             BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(sender.getEntityWorld());
             return getListOfStringsMatchingLastWord(args,btsPingSavedData.getNames());
         }

@@ -1,30 +1,27 @@
-package tfar.btslogpose.command;
+package tfar.btslogpose.command.islands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.command.CommandTreeBase;
+import tfar.btslogpose.command.pings.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BTSPingCommand extends CommandTreeBase {
+public class BTSIslandCommand extends CommandTreeBase {
 
-    public BTSPingCommand() {
-        this.addSubcommand(new BTSCreatePingCommand());
-        this.addSubcommand(new BTSDeletePingCommand());
-        this.addSubcommand(new BTSTrackPingCommand());
-        this.addSubcommand(new BTSUnTrackPingCommand());
-        this.addSubcommand(new BTSListPingCommand());
+    public BTSIslandCommand() {
+        this.addSubcommand(new BTSIslandReloadCommand());
     }
     @Override
     public String getName() {
-        return "btsping";
+        return "btsisland";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.btsping.usage";
+        return "commands.island.usage";
     }
 
     @Override

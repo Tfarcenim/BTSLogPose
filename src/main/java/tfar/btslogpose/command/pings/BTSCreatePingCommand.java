@@ -1,4 +1,4 @@
-package tfar.btslogpose.command;
+package tfar.btslogpose.command.pings;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

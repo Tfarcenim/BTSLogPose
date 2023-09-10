@@ -1,4 +1,4 @@
-package tfar.btslogpose.command;
+package tfar.btslogpose.command.pings;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraftforge.server.command.CommandTreeBase;
