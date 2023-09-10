@@ -9,13 +9,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import tfar.btslogpose.command.BTSPingCommand;
 import tfar.btslogpose.command.OpenRegionScreenCommand;
+import tfar.btslogpose.config.BTSConfig;
 import tfar.btslogpose.net.PacketHandler;
 import tfar.btslogpose.world.BTSPingSavedData;
+
+import java.util.List;
 
 @Mod(modid = BTSLogPose.MOD_ID)
 @Mod.EventBusSubscriber
 public class BTSLogPose {
     public static final String MOD_ID = "btslogpose";
+
+    public static List<BTSConfig> config;
+
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
@@ -28,16 +34,17 @@ public class BTSLogPose {
     }
 
     @Mod.EventHandler
-    public void serverStarting(FMLServerStartingEvent evt)
-    {
+    public void serverStarting(FMLServerStartingEvent evt) {
         evt.registerServerCommand(new BTSPingCommand());
         evt.registerServerCommand(new OpenRegionScreenCommand());
+        config = BTSConfig.read();
     }
 
     @SubscribeEvent
     public static void login(PlayerEvent.PlayerLoggedInEvent e) {
         BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(e.player.world);
         btsPingSavedData.sendPings((EntityPlayerMP) e.player);
+
     }
 
     @SubscribeEvent

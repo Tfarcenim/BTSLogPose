@@ -1,5 +1,6 @@
 package tfar.btslogpose.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,14 +24,18 @@ public class SelectRegionScreen extends GuiScreen {
         int guiLeft = (this.width - 823/3) / 2;
         int guiTop = (this.height - 585/3) / 2;
         addButton(new GuiButton(0,guiLeft+56,guiTop+115,50,20,"test"));
-        addButton(new GuiButton(0,guiLeft+56 + 53,guiTop+115,50,20,"test"));
-        addButton(new GuiButton(0,guiLeft+56 + 53 * 2,guiTop+115,50,20,"test"));
+        addButton(new GuiButton(1,guiLeft+56 + 53,guiTop+115,50,20,"test"));
+        addButton(new GuiButton(2,guiLeft+56 + 53 * 2,guiTop+115,50,20,"test"));
 
     }
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
+        switch (button.id) {
+            case 0:
+                Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("East Blue"));
+        }
     }
 
     @Override

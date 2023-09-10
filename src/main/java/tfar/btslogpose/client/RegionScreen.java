@@ -27,13 +27,12 @@ public class RegionScreen extends GuiScreen {
     }
 
 
-    protected void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY)
-    {
+    protected void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/menu/gui_1.png"));
+        this.mc.getTextureManager().bindTexture(new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/menu/gui_2.png"));
         int texWidth = 823;
         int texHeight = 456;
-        int w = 585;
+        int w = 528;
 
         int i = (this.width - w/3) / 2;
         int j = (this.height - texHeight/3) / 2;
