@@ -4,13 +4,24 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import tfar.btslogpose.BTSLogPose;
+import tfar.btslogpose.config.BTSIslandConfig;
+
+import java.util.Map;
 
 public class RegionScreen extends GuiScreen {
 
     private final String region;
 
+    private final Map<String, BTSIslandConfig> islandConfigMap;
+
     public RegionScreen(String region) {
         this.region = region;
+        islandConfigMap = BTSLogPose.configs.get(region);
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
     }
 
     @Override

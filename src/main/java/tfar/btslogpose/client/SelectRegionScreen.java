@@ -33,8 +33,10 @@ public class SelectRegionScreen extends GuiScreen {
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
         switch (button.id) {
-            case 0:
-                Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("East Blue"));
+            case 0: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("east_blue.json"));break;
+            case 1: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("grand_line.json"));break;
+            case 2: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("new_world.json"));break;
+
         }
     }
 

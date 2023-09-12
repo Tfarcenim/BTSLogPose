@@ -28,6 +28,7 @@ public class S2CBTSIslandConfigPacket implements IMessage {
 
   @Override
   public void fromBytes(ByteBuf buf) {
+    regionName = ByteBufUtils.readUTF8String(buf);
     int size = buf.readInt();
     for( int i = 0; i< size;i++) {
       String name = ByteBufUtils.readUTF8String(buf);
@@ -37,6 +38,7 @@ public class S2CBTSIslandConfigPacket implements IMessage {
 
   @Override
   public void toBytes(ByteBuf buf) {
+    ByteBufUtils.writeUTF8String(buf,regionName);
     buf.writeInt(regionConfig.size());
     for (Map.Entry<String, BTSIslandConfig> entry : regionConfig.entrySet()) {
       String name = entry.getKey();

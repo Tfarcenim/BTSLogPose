@@ -63,7 +63,12 @@ public class BTSIslandConfig {
     }
 
     public static Map<String, Map<String, BTSIslandConfig>> read() {
-        Map<String, Map<String, BTSIslandConfig>> mapMap = new HashMap<>();
+        Map<String, Map<String, BTSIslandConfig>> mapMap = new HashMap(){
+            @Override
+            public Object put(Object key, Object value) {
+                return super.put(key, value);
+            }
+        };
         for (File file : FILES) {
             if (!file.exists()) {
                 Map<String, BTSIslandConfig> list = new HashMap<>();
@@ -72,6 +77,7 @@ public class BTSIslandConfig {
                 write(list,file);
                 LOGGER.info("Loading default config for "+file.getName());
                 mapMap.put(file.getName(),list);
+                continue;
             }
 
             Reader reader = null;
