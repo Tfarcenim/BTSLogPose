@@ -5,7 +5,9 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import tfar.btslogpose.BTSLogPose;
@@ -16,9 +18,9 @@ import java.util.*;
 
 public class BTSDiscoveryData extends WorldSavedData {
 
-    private final Map<String, List<UUID>> discoveries = new HashMap<>();
+    private final Map<String, Map<String, List<UUID>>> discoveries = new HashMap<>();
 
-    public static final String ID = BTSLogPose.MOD_ID+"_btsislanddiscoveries";
+    public static final String ID = BTSLogPose.MOD_ID + "_btsislanddiscoveries";
 
     public BTSDiscoveryData(String name) {
         super(name);
@@ -29,41 +31,53 @@ public class BTSDiscoveryData extends WorldSavedData {
     }
 
 
-    public void discover(String island,EntityPlayerMP player) {
-        discoveries.get(island).add(player.getPersistentID());
+    public void discover(String region, String island, EntityPlayerMP player) {
+        discoveries.get(region).get(island).add(player.getPersistentID());
+        WorldServer world = (WorldServer) player.world;
+        MinecraftServer server = world.getMinecraftServer();
+       // server.getCommandManager().executeCommand(server, BTSLogPose.configs.get(region).get(island).run_command_when_ddiscovered);
         syncDiscoveries(player);
         markDirty();
     }
 
-    public void unDiscover(String island,EntityPlayerMP player) {
-        discoveries.get(island).remove(player.getPersistentID());
+    public void unDiscover(String region, String island, EntityPlayerMP player) {
+        discoveries.get(region).get(island).remove(player.getPersistentID());
         syncDiscoveries(player);
         markDirty();
+    }
+
+    public boolean hasDiscovered(String region, String island, EntityPlayerMP playerMP) {
+        return getDiscoveriesForRegion(region,playerMP).contains(island);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
         discoveries.clear();
-        NBTTagList nbtTagList = nbt.getTagList("islands", Constants.NBT.TAG_COMPOUND);
-        for (NBTBase nbtBase : nbtTagList) {
-            NBTTagCompound nbtTagCompound = (NBTTagCompound) nbtBase;
-            String name = nbtTagCompound.getString("island");
-            List<UUID> uuids = deserializeuuids(nbtTagCompound.getTagList("tracking",Constants.NBT.TAG_STRING));
-            discoveries.put(null,uuids);
+        for (String region : nbt.getKeySet()) {
+            NBTTagCompound nbtTagCompound = nbt.getCompoundTag(region);
+            Map<String,List<UUID>> islands = new HashMap<>();
+            for (String island : nbtTagCompound.getKeySet()) {
+                List<UUID> uuids = deserializeuuids(nbtTagCompound.getTagList(island,Constants.NBT.TAG_STRING));
+                islands.put(island,uuids);
+            }
+            discoveries.put(region,islands);
         }
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-        NBTTagList nbtTagList = new NBTTagList();
-        for (Map.Entry<String,List<UUID>> entry : discoveries.entrySet()) {
+        NBTTagCompound nbtTagCompound1 = new NBTTagCompound();
+        for (Map.Entry<String, Map<String, List<UUID>>> entry : discoveries.entrySet()) {
+            String region = entry.getKey();
+            Map<String, List<UUID>> discoveredIslands = entry.getValue();
             NBTTagCompound nbtTagCompound = new NBTTagCompound();
-            nbtTagCompound.setString("island",entry.getKey());
-            nbtTagCompound.setTag("tracking",BTSPingSavedData.serializeuuids(entry.getValue()));
-            nbtTagList.appendTag(nbtTagCompound);
+            for (Map.Entry<String, List<UUID>> mapEntry : discoveredIslands.entrySet()) {
+                String islandName = entry.getKey();
+                nbtTagCompound.setTag(islandName, BTSPingSavedData.serializeuuids(mapEntry.getValue()));
             }
-        compound.setTag("islands", nbtTagList);
-        return compound;
+            nbtTagCompound1.setTag(region,nbtTagCompound);
+        }
+        return nbtTagCompound1;
     }
 
     public static List<UUID> deserializeuuids(NBTTagList list) {
@@ -82,17 +96,17 @@ public class BTSDiscoveryData extends WorldSavedData {
     }
 
     public static BTSDiscoveryData getOrCreate(World world) {
-        BTSDiscoveryData ladderSavedData = (BTSDiscoveryData) world.getMapStorage().getOrLoadData(BTSDiscoveryData.class, BTSDiscoveryData.ID);
-        if (ladderSavedData == null) {
-            ladderSavedData = new BTSDiscoveryData();
-            world.getMapStorage().setData(BTSDiscoveryData.ID, ladderSavedData);
+        BTSDiscoveryData btsDiscoveryData = (BTSDiscoveryData) world.getMapStorage().getOrLoadData(BTSDiscoveryData.class, BTSDiscoveryData.ID);
+        if (btsDiscoveryData == null) {
+            btsDiscoveryData = new BTSDiscoveryData();
+            world.getMapStorage().setData(BTSDiscoveryData.ID, btsDiscoveryData);
         }
-        return ladderSavedData;
+        return btsDiscoveryData;
     }
 
-    public List<String> getDiscoveries(EntityPlayerMP playerMP) {
+    public List<String> getDiscoveriesForRegion(String region,EntityPlayerMP playerMP) {
         List<String> discs = new ArrayList<>();
-        for (Map.Entry<String,List<UUID>> entry : discoveries.entrySet()) {
+        for (Map.Entry<String, List<UUID>> entry : discoveries.get(region).entrySet()) {
             if (entry.getValue().contains(playerMP.getPersistentID())) {
                 discs.add(entry.getKey());
             }
@@ -101,6 +115,9 @@ public class BTSDiscoveryData extends WorldSavedData {
     }
 
     public void syncDiscoveries(EntityPlayerMP player) {
-        PacketHandler.sendPacketToClient(new S2CBTSIslandDiscoveryPacket(getDiscoveries(player)),player);
+        for (Map.Entry<String, Map<String, List<UUID>>> map : discoveries.entrySet()) {
+            String region = map.getKey();
+            PacketHandler.sendPacketToClient(new S2CBTSIslandDiscoveryPacket(region,getDiscoveriesForRegion(region,player)), player);
+        }
     }
 }

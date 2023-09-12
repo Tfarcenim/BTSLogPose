@@ -18,6 +18,8 @@ public class PacketHandler {
     // Register messages which are sent from the client to the server here:
     INSTANCE.registerMessage(S2CBTSPingPacket.Handler.class, S2CBTSPingPacket.class, 0, Side.CLIENT);
     INSTANCE.registerMessage(S2COpenRegionScreenPacket.Handler.class, S2COpenRegionScreenPacket.class, 1, Side.CLIENT);
+    INSTANCE.registerMessage(S2CBTSIslandDiscoveryPacket.Handler.class, S2CBTSIslandDiscoveryPacket.class, 2, Side.CLIENT);
+    INSTANCE.registerMessage(S2CBTSIslandConfigPacket.Handler.class, S2CBTSIslandConfigPacket.class, 3, Side.CLIENT);
   }
 
   public static void sendPacketToAllClientsInDimension(IMessage pkt, int dim) {

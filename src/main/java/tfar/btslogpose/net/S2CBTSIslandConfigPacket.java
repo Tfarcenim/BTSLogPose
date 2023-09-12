@@ -16,12 +16,14 @@ import java.util.Map;
 // not threadsafe!
 public class S2CBTSIslandConfigPacket implements IMessage {
 
-  private Map<String, BTSIslandConfig> pings = new HashMap<>();
+  private String regionName;
+  private Map<String, BTSIslandConfig> regionConfig = new HashMap<>();
   public S2CBTSIslandConfigPacket() {
   }
 
-  public S2CBTSIslandConfigPacket(Map<String, BTSIslandConfig> pings) {
-    this.pings = pings;
+  public S2CBTSIslandConfigPacket(String regionName,Map<String, BTSIslandConfig> regionConfig) {
+    this.regionName = regionName;
+    this.regionConfig = regionConfig;
   }
 
   @Override
@@ -29,14 +31,14 @@ public class S2CBTSIslandConfigPacket implements IMessage {
     int size = buf.readInt();
     for( int i = 0; i< size;i++) {
       String name = ByteBufUtils.readUTF8String(buf);
-      pings.put(name,BTSIslandConfig.fromNetwork(buf));
+      regionConfig.put(name,BTSIslandConfig.fromNetwork(buf));
     }
   }
 
   @Override
   public void toBytes(ByteBuf buf) {
-    buf.writeInt(pings.size());
-    for (Map.Entry<String, BTSIslandConfig> entry : pings.entrySet()) {
+    buf.writeInt(regionConfig.size());
+    for (Map.Entry<String, BTSIslandConfig> entry : regionConfig.entrySet()) {
       String name = entry.getKey();
       ByteBufUtils.writeUTF8String(buf,name);
       entry.getValue().toNetwork(buf);
@@ -56,7 +58,7 @@ public class S2CBTSIslandConfigPacket implements IMessage {
 
     private void handle(S2CBTSIslandConfigPacket message, MessageContext ctx) {
       // This code is run on the server side. So you can do server-side calculations here
-      Minecraft.getMinecraft().addScheduledTask(() -> BTSLogPose.configs = message.pings);
+      Minecraft.getMinecraft().addScheduledTask(() -> BTSLogPose.configs.put(message.regionName, message.regionConfig));
     }
   }
 }

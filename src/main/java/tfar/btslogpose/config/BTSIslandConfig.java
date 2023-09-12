@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.apache.commons.io.IOUtils;
@@ -18,22 +17,31 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BTSIslandConfig {
     public String undiscovered_icon = "undiscovered.png";
     public String discovered_icon = "discovered.png";
     transient public String translation_key;
-
-    public String run_command_if_undiscovered = "/btslogpose unlock_island btsisland";
-
     public AxisAlignedBB discovery = new AxisAlignedBB(0,0,0,64,64,64);
 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final File FILE = new File("config/"+ BTSLogPose.MOD_ID +".json");
+    private static final List<File> FILES;
+
+    static  {
+
+        FILES = new ArrayList<>();
+        new File("config/btsregions/").mkdir();
+        for (String s : BTSLogPose.REGIONS) {
+            File file = new File("config/btsregions/" + s + ".json");
+            FILES.add(file);
+        }
+    }
 
     public void toNetwork(ByteBuf buf) {
         ByteBufUtils.writeUTF8String(buf,undiscovered_icon);
@@ -54,52 +62,56 @@ public class BTSIslandConfig {
         return translation_key;
     }
 
-    public static Map<String,BTSIslandConfig> read() {
-        if (!FILE.exists()) {
-            Map<String,BTSIslandConfig> list = new HashMap<>();
-            list.put("btsisland1",new BTSIslandConfig());
-            list.put("btsisland2",new BTSIslandConfig());
-            write(list);
-            LOGGER.info("Loading default config");
-            return list;
-        }
-
-        Reader reader = null;
-        try {
-
-            reader = new FileReader(FILE);
-
-            JsonReader jsonReader = new JsonReader(reader);
-
-            Gson gson = new Gson();
-
-           // Type listType = new TypeToken<ArrayList<BTSIslandConfig>>(){}.getType();
-
-            LOGGER.info("Loading existing config");
-
-            JsonObject jsonObject = gson.fromJson(jsonReader,JsonObject.class);
-
-            Map<String,BTSIslandConfig> config = new HashMap<>();
-
-            for (Map.Entry<String,JsonElement> entry : jsonObject.entrySet()) {
-                JsonElement jsonElement = entry.getValue();
-                BTSIslandConfig btsIslandConfig = gson.fromJson(jsonElement, BTSIslandConfig.class);
-                config.put(entry.getKey(),btsIslandConfig);
+    public static Map<String, Map<String, BTSIslandConfig>> read() {
+        Map<String, Map<String, BTSIslandConfig>> mapMap = new HashMap<>();
+        for (File file : FILES) {
+            if (!file.exists()) {
+                Map<String, BTSIslandConfig> list = new HashMap<>();
+                list.put("btsisland1", new BTSIslandConfig());
+                list.put("btsisland2", new BTSIslandConfig());
+                write(list,file);
+                LOGGER.info("Loading default config for "+file.getName());
+                mapMap.put(file.getName(),list);
             }
-            return config;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(reader);
+
+            Reader reader = null;
+            try {
+
+                reader = new FileReader(file);
+
+                JsonReader jsonReader = new JsonReader(reader);
+
+                Gson gson = new Gson();
+
+                // Type listType = new TypeToken<ArrayList<BTSIslandConfig>>(){}.getType();
+
+                LOGGER.info("Loading existing config");
+
+                JsonObject jsonObject = gson.fromJson(jsonReader, JsonObject.class);
+
+                Map<String, BTSIslandConfig> config = new HashMap<>();
+
+                for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+                    JsonElement jsonElement = entry.getValue();
+                    BTSIslandConfig btsIslandConfig = gson.fromJson(jsonElement, BTSIslandConfig.class);
+                    config.put(entry.getKey(), btsIslandConfig);
+                }
+                mapMap.put(file.getName(),config);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                IOUtils.closeQuietly(reader);
+            }
         }
+        return mapMap;
     }
 
-    public static void write(Map<String,BTSIslandConfig> configs) {
+    public static void write(Map<String,BTSIslandConfig> configs,File file) {
         Gson gson = new Gson();
         JsonWriter writer = null;
         try {
-            writer = gson.newJsonWriter(new FileWriter(FILE));
+            writer = gson.newJsonWriter(new FileWriter(file));
             writer.setIndent("    ");
 
             JsonObject object = new JsonObject();

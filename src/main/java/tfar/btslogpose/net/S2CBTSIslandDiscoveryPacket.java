@@ -3,6 +3,7 @@ package tfar.btslogpose.net;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -14,16 +15,19 @@ import java.util.List;
 // not threadsafe!
 public class S2CBTSIslandDiscoveryPacket implements IMessage {
 
+  private String region;
   private List<String> discoveries = new ArrayList<>();
   public S2CBTSIslandDiscoveryPacket() {
   }
 
-  public S2CBTSIslandDiscoveryPacket(List<String> discoveries) {
+  public S2CBTSIslandDiscoveryPacket(String region,List<String> discoveries) {
+    this.region = region;
     this.discoveries = discoveries;
   }
 
   @Override
   public void fromBytes(ByteBuf buf) {
+    region = ByteBufUtils.readUTF8String(buf);
     int size = buf.readInt();
     for( int i = 0; i< size;i++) {
     //  pings.add(BTSPing.fromNetwork(buf));
@@ -32,6 +36,7 @@ public class S2CBTSIslandDiscoveryPacket implements IMessage {
 
   @Override
   public void toBytes(ByteBuf buf) {
+    ByteBufUtils.writeUTF8String(buf,region);
     buf.writeInt(discoveries.size());
    // for (BTSPing p : pings) {
     //  p.toNetwork(buf);
