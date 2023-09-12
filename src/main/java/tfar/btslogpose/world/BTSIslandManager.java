@@ -1,6 +1,9 @@
 package tfar.btslogpose.world;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -19,6 +22,7 @@ import java.util.Map;
 public class BTSIslandManager {
 
     public static BTSDiscoveryData btsDiscoveryData;
+    public static int commandCount;
 
     @SubscribeEvent
     public static void playerTick(TickEvent.ServerTickEvent e) {
@@ -29,11 +33,23 @@ public class BTSIslandManager {
                 String region = regionEntry.getKey();
                 for (Map.Entry<String, BTSIslandConfig> islandEntry : regionEntry.getValue().entrySet()) {
                     String islandName = islandEntry.getKey();
-                    List<EntityPlayerMP> players = serverWorld.getEntitiesWithinAABB(EntityPlayerMP.class, islandEntry.getValue().discovery,
+                    BTSIslandConfig config = islandEntry.getValue();
+                    List<EntityPlayerMP> players = serverWorld.getEntitiesWithinAABB(EntityPlayerMP.class, config.discovery.getOriginal(),
                             (entityPlayer) -> !BTSIslandManager.hasDiscovered(region, islandName, entityPlayer, serverWorld));
                     for (EntityPlayerMP playerMP : players) {
-                        System.out.println(playerMP + " is within " + islandName);
-                        discover(region, islandName, playerMP, serverWorld);
+                        System.out.println(playerMP + " discovered " + islandName);
+                    //    discover(region, islandName, playerMP, serverWorld);
+                        MinecraftServer server = serverWorld.getMinecraftServer();
+                        try {
+                            String playerName = CommandBase.getEntity(server, server, playerMP.getName()).getName();
+                            String rawCommand = config.command_on_discovery;
+                            rawCommand = rawCommand.replace("%player",playerName);
+                            commandCount++;
+                            server.getCommandManager().executeCommand(server, rawCommand);
+                        } catch (CommandException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
                     }
                 }
             }

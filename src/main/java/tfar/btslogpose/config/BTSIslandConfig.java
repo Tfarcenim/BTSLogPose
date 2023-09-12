@@ -7,7 +7,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -26,21 +25,33 @@ import java.util.Map;
 public class BTSIslandConfig {
     public String undiscovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/undiscovered.png").toString();
     public String discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/discovered.png").toString();
+    public String command_on_track = "";
+    public String command_on_untrack = "";
+    public String command_on_discovery = "";
     transient public String translation_key;
-    public AxisAlignedBB discovery = new AxisAlignedBB(0,0,0,64,64,64);
+    public AABB discovery = new AABB(0,0,0,64,64,64);
 
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static BTSIslandConfig makeAlvidaHideOut() {
+    private static BTSIslandConfig makeAlvidaHideOut(String region) {
         BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
         btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/alvida_hideout.png").toString();
+        btsIslandConfig.makeDefaultCommands(region,"alvida_hideout");
         return btsIslandConfig;
     }
 
-    private static BTSIslandConfig makeFoosha() {
+    private void makeDefaultCommands(String region,String island) {
+        command_on_track = "/btsping track %player "+island;
+        command_on_untrack = "/btsping untrack %player "+island;
+        command_on_discovery = "/btsisland discover "+region+" "+island+" %player";
+    }
+
+    private static BTSIslandConfig makeFoosha(String region) {
         BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
         btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/foosha.png").toString();
+        btsIslandConfig.discovery = btsIslandConfig.discovery.offset(0,64,0);
+        btsIslandConfig.makeDefaultCommands(region,"foosha");
         return btsIslandConfig;
     }
 
@@ -79,9 +90,10 @@ public class BTSIslandConfig {
         Map<String, Map<String, BTSIslandConfig>> mapMap = new HashMap<>();
         for (File file : FILES) {
             if (!file.exists()) {
+                String filename = file.getName();
                 Map<String, BTSIslandConfig> list = new HashMap<>();
-                list.put("alvida_hideout", makeAlvidaHideOut());
-                list.put("foosha", makeFoosha());
+                list.put("alvida_hideout", makeAlvidaHideOut(filename.replace(".json","")));
+                list.put("foosha", makeFoosha(filename.replace(".json","")));
                 write(list,file);
                 LOGGER.info("Loading default config for "+file.getName());
                 mapMap.put(file.getName(),list);
