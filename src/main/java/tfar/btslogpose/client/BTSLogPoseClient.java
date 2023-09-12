@@ -20,7 +20,7 @@ import java.util.List;
 public class BTSLogPoseClient {
 
     private static List<BTSPing> pings = new ArrayList<>();
-    private static List<String> discovered = new ArrayList<>();
+    public static List<String> discovered = new ArrayList<>();
 
     public static void setPings(List<BTSPing> pings) {
         BTSLogPoseClient.pings = pings;

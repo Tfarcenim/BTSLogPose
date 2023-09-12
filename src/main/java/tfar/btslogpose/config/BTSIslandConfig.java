@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import org.apache.commons.io.IOUtils;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class BTSIslandConfig {
-    public String undiscovered_icon = "undiscovered.png";
+    public String undiscovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/undiscovered.png").toString();
     public String discovered_icon = "discovered.png";
     transient public String translation_key;
     public AxisAlignedBB discovery = new AxisAlignedBB(0,0,0,64,64,64);
@@ -63,12 +64,7 @@ public class BTSIslandConfig {
     }
 
     public static Map<String, Map<String, BTSIslandConfig>> read() {
-        Map<String, Map<String, BTSIslandConfig>> mapMap = new HashMap(){
-            @Override
-            public Object put(Object key, Object value) {
-                return super.put(key, value);
-            }
-        };
+        Map<String, Map<String, BTSIslandConfig>> mapMap = new HashMap<>();
         for (File file : FILES) {
             if (!file.exists()) {
                 Map<String, BTSIslandConfig> list = new HashMap<>();
