@@ -36,7 +36,7 @@ public class BTSDiscoverIslandCommand extends CommandBase {
             Entity entity = getEntity(server, sender, args[j++]);
             if (BTSLogPose.REGIONS.contains(region)) {
                 BTSIslandManager.discover(region+".json",island,(EntityPlayerMP) entity,server.getWorld(0));
-                notifyCommandListener(sender, this, "commands.btsislands.discover_island.success");
+                notifyCommandListener(sender, this, "commands.btsislands.discover_island.success",entity.getName(),island,region);
             }
         }
     }

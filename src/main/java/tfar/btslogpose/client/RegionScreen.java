@@ -6,6 +6,8 @@ import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.btslogpose.BTSLogPose;
 import tfar.btslogpose.config.BTSIslandConfig;
+import tfar.btslogpose.net.C2SToggleTrackingPacket;
+import tfar.btslogpose.net.PacketHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class RegionScreen extends ScaledGuiScreen {
     private final List<Pair<String, BTSIslandConfig>> islandConfigMap;
 
     public RegionScreen(String region) {
-        super(BACK, 823,456);
+        super(BACK, 893,456);
         this.region = region;
         islandConfigMap = new ArrayList<>();
         BTSLogPose.configs.get(region).entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue())).forEach(islandConfigMap::add);
@@ -53,12 +55,20 @@ public class RegionScreen extends ScaledGuiScreen {
         if (islandCount < 4) {
             for (int i = 0; i < islandConfigMap.size();i++) {
                 Pair<String,BTSIslandConfig> pair = islandConfigMap.get(i);
-                String name = pair.getLeft();
+                String islandName = pair.getLeft();
                 BTSIslandConfig config = pair.getRight();
-                trackingButtons[i] = new GuiButton(i,guiLeft+50 + 66 * i,guiTop+125,20,20,"");
+                trackingButtons[i] = new TrackingButton(i,guiLeft+50 + 66 * i,guiTop+125,50,20,"",() -> {
+                    boolean currentlyTracked = BTSLogPoseClient.isIslandTracked(region,islandName);
+                    PacketHandler.sendPacketToServer(new C2SToggleTrackingPacket(region,islandName,currentlyTracked));
+                    if (currentlyTracked) {
+                        BTSLogPoseClient.unTrackIsland(region, islandName);
+                    } else {
+                        BTSLogPoseClient.trackIsland(region, islandName);
+                    }
+                });
 
                 List<String> discs = BTSLogPoseClient.discovered.get(region);
-                images[i] = discs != null && discs.contains(name) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
+                images[i] = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
                 addButton(trackingButtons[i]);
             }
         } else {
@@ -71,8 +81,14 @@ public class RegionScreen extends ScaledGuiScreen {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
-        switch (button.id) {
-            case RIGHT_ARROW:
+
+        if (button instanceof TrackingButton) {
+            TrackingButton trackingButton = (TrackingButton) button;
+            trackingButton.press.run();
+        } else {
+            switch (button.id) {
+                case RIGHT_ARROW:
+            }
         }
     }
     protected void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
@@ -92,7 +108,7 @@ public class RegionScreen extends ScaledGuiScreen {
                 this.mc.getTextureManager().bindTexture(resourceLocation);
                 int iconSize = 512;
                 int screenSize = 64;
-                drawScaledCustomSizeModalRect(27+ i + i1  * 74, j+52, 0, 0, iconSize,iconSize, screenSize, screenSize,iconSize,iconSize);
+                drawScaledCustomSizeModalRect(34+ i + i1  * 78, j+52, 0, 0, iconSize,iconSize, screenSize, screenSize,iconSize,iconSize);
             }
         }
     }

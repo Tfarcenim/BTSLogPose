@@ -21,9 +21,14 @@ public class SelectRegionScreen extends ScaledGuiScreen {
         super.initGui();
         int guiLeft = (this.width - 823/3) / 2;
         int guiTop = (this.height - 585/3) / 2;
-        addButton(new GuiButton(0,guiLeft+56,guiTop+115,50,20,"test"));
-        addButton(new GuiButton(1,guiLeft+56 + 53,guiTop+115,50,20,"test"));
-        addButton(new GuiButton(2,guiLeft+56 + 53 * 2,guiTop+115,50,20,"test"));
+        int y = guiTop + 124;
+
+        int bWidth = 60;
+        int bHeight = 20;
+        int space = 80;
+        addButton(new GuiButton(0,guiLeft+20,y,bWidth,bHeight,""));
+        addButton(new GuiButton(1,guiLeft+20 + space,y,bWidth,bHeight,""));
+        addButton(new GuiButton(2,guiLeft+20 + space * 2,y,bWidth,bHeight,""));
 
     }
 

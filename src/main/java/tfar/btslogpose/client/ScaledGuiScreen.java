@@ -30,7 +30,7 @@ public abstract class ScaledGuiScreen extends GuiScreen {
     }
 
     public int getW() {
-        return 531;
+        return 580;
     }
 
 
