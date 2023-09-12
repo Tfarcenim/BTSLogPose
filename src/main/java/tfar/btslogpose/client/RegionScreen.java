@@ -40,8 +40,11 @@ public class RegionScreen extends ScaledGuiScreen {
     public void initGui() {
         super.initGui();
 
-        int guiLeft = (this.width - 823/3) / 2;
-        int guiTop = (this.height - 585/3) / 2;
+        int backGroundSizeX = (int) (getW() *backGroundScale);
+        int backGroundSizeY = (int) (backgroundTextureSizeY * backGroundScale);
+
+        int guiLeft = (this.width - backGroundSizeX) / 2;
+        int guiTop = (this.height - backGroundSizeY) / 2;
 
         mapButtons(guiLeft,guiTop);
 
@@ -57,7 +60,7 @@ public class RegionScreen extends ScaledGuiScreen {
                 Pair<String,BTSIslandConfig> pair = islandConfigMap.get(i);
                 String islandName = pair.getLeft();
                 BTSIslandConfig config = pair.getRight();
-                trackingButtons[i] = new TrackingButton(i,guiLeft+50 + 66 * i,guiTop+125,50,20,"",() -> {
+                trackingButtons[i] = new TrackingButton(i,guiLeft+44 + 76 * i,guiTop+135,60,20,"",() -> {
                     boolean currentlyTracked = BTSLogPoseClient.isIslandTracked(region,islandName);
                     PacketHandler.sendPacketToServer(new C2SToggleTrackingPacket(region,islandName,currentlyTracked));
                     if (currentlyTracked) {

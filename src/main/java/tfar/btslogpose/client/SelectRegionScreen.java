@@ -2,7 +2,6 @@ package tfar.btslogpose.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import tfar.btslogpose.BTSLogPose;
 
@@ -19,8 +18,12 @@ public class SelectRegionScreen extends ScaledGuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        int guiLeft = (this.width - 823/3) / 2;
-        int guiTop = (this.height - 585/3) / 2;
+
+        int backGroundSizeX = (int) (getW() *backGroundScale);
+        int backGroundSizeY = (int) (backgroundTextureSizeY * backGroundScale);
+
+        int guiLeft = (this.width - backGroundSizeX) / 2;
+        int guiTop = (this.height - backGroundSizeY) / 2;
         int y = guiTop + 124;
 
         int bWidth = 60;
