@@ -13,21 +13,23 @@ import net.minecraftforge.fml.relauncher.Side;
 import tfar.btslogpose.world.BTSPing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Mod.EventBusSubscriber(Side.CLIENT)
 public class BTSLogPoseClient {
 
     private static List<BTSPing> pings = new ArrayList<>();
-    public static List<String> discovered = new ArrayList<>();
+    public static Map<String,List<String>> discovered = new HashMap<>();
 
     public static void setPings(List<BTSPing> pings) {
         BTSLogPoseClient.pings = pings;
     }
 
-    public static void setDiscoveries(List<String> discovered) {
-        BTSLogPoseClient.discovered = discovered;
+    public static void setDiscoveries(String region,List<String> discovered) {
+        BTSLogPoseClient.discovered.put(region,discovered);
     }
 
     public static void openRegionScreen() {

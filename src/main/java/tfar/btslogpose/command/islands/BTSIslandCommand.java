@@ -1,18 +1,14 @@
 package tfar.btslogpose.command.islands;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.server.command.CommandTreeBase;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class BTSIslandCommand extends CommandTreeBase {
 
     public BTSIslandCommand() {
         this.addSubcommand(new BTSIslandReloadCommand());
         this.addSubcommand(new BTSDiscoverIslandCommand());
+        this.addSubcommand(new BTSUnDiscoverIslandCommand());
     }
     @Override
     public String getName() {
@@ -24,8 +20,4 @@ public class BTSIslandCommand extends CommandTreeBase {
         return "commands.island.usage";
     }
 
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        return super.getTabCompletions(server, sender, args, targetPos);
-    }
 }

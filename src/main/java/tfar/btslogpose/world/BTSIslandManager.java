@@ -30,7 +30,7 @@ public class BTSIslandManager {
                 for (Map.Entry<String, BTSIslandConfig> islandEntry : regionEntry.getValue().entrySet()) {
                     String islandName = islandEntry.getKey();
                     List<EntityPlayerMP> players = serverWorld.getEntitiesWithinAABB(EntityPlayerMP.class, islandEntry.getValue().discovery,
-                            (entityPlayer) -> BTSIslandManager.hasDiscovered(region, islandName, entityPlayer, serverWorld));
+                            (entityPlayer) -> !BTSIslandManager.hasDiscovered(region, islandName, entityPlayer, serverWorld));
                     for (EntityPlayerMP playerMP : players) {
                         System.out.println(playerMP + " is within " + islandName);
                         discover(region, islandName, playerMP, serverWorld);
@@ -56,6 +56,11 @@ public class BTSIslandManager {
     public static void discover(String region,String island, EntityPlayerMP player, WorldServer overworld) {
         BTSDiscoveryData data = getOrCreateDiscoveryData(overworld);
         data.discover(region,island,player);
+    }
+
+    public static void undiscover(String region,String island, EntityPlayerMP player, WorldServer overworld) {
+        BTSDiscoveryData data = getOrCreateDiscoveryData(overworld);
+        data.unDiscover(region,island,player);
     }
 
     public static void sendIslandConfigsToClient(EntityPlayerMP player) {

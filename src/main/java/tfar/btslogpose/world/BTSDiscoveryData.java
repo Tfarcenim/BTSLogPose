@@ -27,12 +27,26 @@ public class BTSDiscoveryData extends WorldSavedData {
     }
 
     public BTSDiscoveryData() {
-        super(ID);
+        this(ID);
     }
 
 
     public void discover(String region, String island, EntityPlayerMP player) {
-        discoveries.get(region).get(island).add(player.getPersistentID());
+
+
+        if (!discoveries.containsKey(region)) {
+            discoveries.put(region,new HashMap<>());
+        }
+
+        Map<String,List<UUID>> map = discoveries.get(region);
+
+        if (!map.containsKey(island)) {
+            map.put(island,new ArrayList<>());
+        }
+
+        List<UUID> uuids = map.get(island);
+
+        uuids.add(player.getPersistentID());
         WorldServer world = (WorldServer) player.world;
         MinecraftServer server = world.getMinecraftServer();
        // server.getCommandManager().executeCommand(server, BTSLogPose.configs.get(region).get(island).run_command_when_ddiscovered);
@@ -106,9 +120,12 @@ public class BTSDiscoveryData extends WorldSavedData {
 
     public List<String> getDiscoveriesForRegion(String region,EntityPlayerMP playerMP) {
         List<String> discs = new ArrayList<>();
-        for (Map.Entry<String, List<UUID>> entry : discoveries.get(region).entrySet()) {
-            if (entry.getValue().contains(playerMP.getPersistentID())) {
-                discs.add(entry.getKey());
+        Map<String,List<UUID>> map = discoveries.get(region);
+        if (map != null) {
+            for (Map.Entry<String, List<UUID>> entry : map.entrySet()) {
+                if (entry.getValue().contains(playerMP.getPersistentID())) {
+                    discs.add(entry.getKey());
+                }
             }
         }
         return discs;

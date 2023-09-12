@@ -30,7 +30,7 @@ public class S2CBTSIslandDiscoveryPacket implements IMessage {
     region = ByteBufUtils.readUTF8String(buf);
     int size = buf.readInt();
     for( int i = 0; i< size;i++) {
-    //  pings.add(BTSPing.fromNetwork(buf));
+      discoveries.add(ByteBufUtils.readUTF8String(buf));
     }
   }
 
@@ -38,9 +38,9 @@ public class S2CBTSIslandDiscoveryPacket implements IMessage {
   public void toBytes(ByteBuf buf) {
     ByteBufUtils.writeUTF8String(buf,region);
     buf.writeInt(discoveries.size());
-   // for (BTSPing p : pings) {
-    //  p.toNetwork(buf);
-   // }
+    for (String s : discoveries) {
+      ByteBufUtils.writeUTF8String(buf,s);
+    }
   }
 
   public static class Handler implements IMessageHandler<S2CBTSIslandDiscoveryPacket, IMessage> {
@@ -56,7 +56,7 @@ public class S2CBTSIslandDiscoveryPacket implements IMessage {
 
     private void handle(S2CBTSIslandDiscoveryPacket message, MessageContext ctx) {
       // This code is run on the server side. So you can do server-side calculations here
-      Minecraft.getMinecraft().addScheduledTask(() -> BTSLogPoseClient.setDiscoveries(message.discoveries));
+      Minecraft.getMinecraft().addScheduledTask(() -> BTSLogPoseClient.setDiscoveries(message.region,message.discoveries));
     }
   }
 }

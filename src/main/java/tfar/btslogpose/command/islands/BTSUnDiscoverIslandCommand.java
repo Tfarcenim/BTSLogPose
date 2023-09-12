@@ -15,16 +15,16 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
-public class BTSDiscoverIslandCommand extends CommandBase {
+public class BTSUnDiscoverIslandCommand extends CommandBase {
 
     @Override
     public String getName() {
-        return "discover";
+        return "undiscover";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.btsislands.discover_island.usage";
+        return "commands.btsislands.undiscover_island.usage";
     }
 
     @Override
@@ -35,8 +35,8 @@ public class BTSDiscoverIslandCommand extends CommandBase {
             String island = args[j++];
             Entity entity = getEntity(server, sender, args[j++]);
             if (BTSLogPose.REGIONS.contains(region)) {
-                BTSIslandManager.discover(region+".json",island,(EntityPlayerMP) entity,server.getWorld(0));
-                notifyCommandListener(sender, this, "commands.btsislands.discover_island.success");
+                BTSIslandManager.undiscover(region+".json",island,(EntityPlayerMP) entity,server.getWorld(0));
+                notifyCommandListener(sender, this, "commands.btsislands.undiscover_island.success");
             }
         }
     }

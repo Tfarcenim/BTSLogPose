@@ -10,6 +10,7 @@ import tfar.btslogpose.config.BTSIslandConfig;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RegionScreen extends ScaledGuiScreen {
 
@@ -55,7 +56,9 @@ public class RegionScreen extends ScaledGuiScreen {
                 String name = pair.getLeft();
                 BTSIslandConfig config = pair.getRight();
                 trackingButtons[i] = new GuiButton(i,guiLeft+50 + 66 * i,guiTop+125,20,20,"");
-                images[i] = BTSLogPoseClient.discovered.contains(name) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
+
+                List<String> discs = BTSLogPoseClient.discovered.get(region);
+                images[i] = discs != null && discs.contains(name) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
                 addButton(trackingButtons[i]);
             }
         } else {

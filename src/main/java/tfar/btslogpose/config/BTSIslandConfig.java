@@ -25,12 +25,24 @@ import java.util.Map;
 
 public class BTSIslandConfig {
     public String undiscovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/undiscovered.png").toString();
-    public String discovered_icon = "discovered.png";
+    public String discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/discovered.png").toString();
     transient public String translation_key;
     public AxisAlignedBB discovery = new AxisAlignedBB(0,0,0,64,64,64);
 
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private static BTSIslandConfig makeAlvidaHideOut() {
+        BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
+        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/alvida_hideout.png").toString();
+        return btsIslandConfig;
+    }
+
+    private static BTSIslandConfig makeFoosha() {
+        BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
+        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/foosha.png").toString();
+        return btsIslandConfig;
+    }
 
     private static final List<File> FILES;
 
@@ -68,8 +80,8 @@ public class BTSIslandConfig {
         for (File file : FILES) {
             if (!file.exists()) {
                 Map<String, BTSIslandConfig> list = new HashMap<>();
-                list.put("btsisland1", new BTSIslandConfig());
-                list.put("btsisland2", new BTSIslandConfig());
+                list.put("alvida_hideout", makeAlvidaHideOut());
+                list.put("foosha", makeFoosha());
                 write(list,file);
                 LOGGER.info("Loading default config for "+file.getName());
                 mapMap.put(file.getName(),list);
