@@ -24,12 +24,11 @@ import java.util.Map;
 
 public class BTSIslandConfig {
     public String undiscovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/undiscovered.png").toString();
-    public String discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/discovered.png").toString();
-    public String command_on_track = "";
-    public String command_on_untrack = "";
-    public String command_on_discovery = "";
-    transient public String translation_key;
-    public AABB discovery = new AABB(0,0,0,64,64,64);
+    public String discovered_icon;
+    public String command_on_track;
+    public String command_on_untrack;
+    public String command_on_discovery;
+    public AABB discovery;
 
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -37,6 +36,7 @@ public class BTSIslandConfig {
     private static BTSIslandConfig makeAlvidaHideOut(String region) {
         BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
         btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/alvida_hideout.png").toString();
+        btsIslandConfig.discovery = new AABB(0,0,0,64,64,64);
         btsIslandConfig.makeDefaultCommands(region,"alvida_hideout");
         return btsIslandConfig;
     }
@@ -50,7 +50,7 @@ public class BTSIslandConfig {
     private static BTSIslandConfig makeFoosha(String region) {
         BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
         btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/foosha.png").toString();
-        btsIslandConfig.discovery = btsIslandConfig.discovery.offset(0,64,0);
+        btsIslandConfig.discovery = new AABB(0,0,0,64,64,64).offset(0,64,0);
         btsIslandConfig.makeDefaultCommands(region,"foosha");
         return btsIslandConfig;
     }
@@ -58,8 +58,16 @@ public class BTSIslandConfig {
     private static BTSIslandConfig makeShelltown(String region) {
         BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
         btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/shelltown.png").toString();
-        btsIslandConfig.discovery = btsIslandConfig.discovery.offset(0,128,0);
+        btsIslandConfig.discovery = new AABB(0,0,0,64,64,64).offset(0,128,0);
         btsIslandConfig.makeDefaultCommands(region,"shelltown");
+        return btsIslandConfig;
+    }
+
+    private static BTSIslandConfig makeOrangeTown(String region) {
+        BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
+        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/orangetown.png").toString();
+        btsIslandConfig.discovery = new AABB(0,0,0,64,64,64).offset(0,192,0);
+        btsIslandConfig.makeDefaultCommands(region,"orangetown");
         return btsIslandConfig;
     }
 
@@ -87,23 +95,16 @@ public class BTSIslandConfig {
         return btsIslandConfig;
     }
 
-    public String createTranslationKey(String registry_name) {
-        if (translation_key == null) {
-            translation_key = "btslogpose.island."+registry_name+".name";
-        }
-        return translation_key;
-    }
-
     public static Map<String, Map<String, BTSIslandConfig>> read() {
         Map<String, Map<String, BTSIslandConfig>> mapMap = new HashMap<>();
         for (File file : FILES) {
+            String filename = file.getName();
             if (!file.exists()) {
-                String filename = file.getName();
                 Map<String, BTSIslandConfig> list = new HashMap<>();
                 list.put("alvida_hideout", makeAlvidaHideOut(filename.replace(".json","")));
                 list.put("foosha", makeFoosha(filename.replace(".json","")));
                 list.put("shelltown", makeShelltown(filename.replace(".json","")));
-                list.put("orangetown", makeShelltown(filename.replace(".json","")));
+                list.put("orangetown", makeOrangeTown(filename.replace(".json","")));
                 write(list,file);
                 LOGGER.info("Loading default config for "+file.getName());
                 mapMap.put(file.getName(),list);
@@ -132,7 +133,7 @@ public class BTSIslandConfig {
                     BTSIslandConfig btsIslandConfig = gson.fromJson(jsonElement, BTSIslandConfig.class);
                     config.put(entry.getKey(), btsIslandConfig);
                 }
-                mapMap.put(file.getName(),config);
+                mapMap.put(filename,config);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);

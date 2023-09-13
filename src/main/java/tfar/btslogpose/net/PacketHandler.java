@@ -20,7 +20,8 @@ public class PacketHandler {
     INSTANCE.registerMessage(S2COpenRegionScreenPacket.Handler.class, S2COpenRegionScreenPacket.class, 1, Side.CLIENT);
     INSTANCE.registerMessage(S2CBTSIslandDiscoveryPacket.Handler.class, S2CBTSIslandDiscoveryPacket.class, 2, Side.CLIENT);
     INSTANCE.registerMessage(S2CBTSIslandConfigPacket.Handler.class, S2CBTSIslandConfigPacket.class, 3, Side.CLIENT);
-    INSTANCE.registerMessage(C2SToggleTrackingPacket.Handler.class, C2SToggleTrackingPacket.class, 4, Side.SERVER);
+    INSTANCE.registerMessage(S2CBTSIslandClearConfigPacket.Handler.class, S2CBTSIslandClearConfigPacket.class, 4, Side.CLIENT);
+    INSTANCE.registerMessage(C2SToggleTrackingPacket.Handler.class, C2SToggleTrackingPacket.class, 5, Side.SERVER);
   }
 
   public static void sendPacketToAllClientsInDimension(IMessage pkt, int dim) {

@@ -58,8 +58,8 @@ public class RegionScreen extends ScaledGuiScreen {
 
         mapButtons(guiLeft,guiTop);
 
-        addButton(new ImageButton(LEFT_ARROW,guiLeft+59,guiTop+169,116/2,85/2,583,282,116,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
-        addButton(new ImageButton(RIGHT_ARROW,guiLeft+173,guiTop+169,116/2,85/2,583,197,116,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
+        addButton(new ImageButton(LEFT_ARROW,guiLeft+59,guiTop+169,118/2,85/2,583,282,118,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
+        addButton(new ImageButton(RIGHT_ARROW,guiLeft+173,guiTop+169,118/2,85/2,583,197,118,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
         addButton(new ImageButton(EXIT,guiLeft + 270,guiTop,47/2,45/2,740,1,47,45,
                 background,backgroundTextureSizeX,backgroundTextureSizeY,null));
     }
@@ -72,15 +72,8 @@ public class RegionScreen extends ScaledGuiScreen {
                     Pair<String, BTSIslandConfig> pair = islandConfigMap.get(ind);
                     String islandName = pair.getLeft();
                     BTSIslandConfig config = pair.getRight();
-                    trackingButtons[i] = new TrackingButton(i, guiLeft + 44 + 76 * i, guiTop + 135, 60, 20, "", () -> {
-                        boolean currentlyTracked = BTSLogPoseClient.isIslandTracked(region, islandName);
-                        PacketHandler.sendPacketToServer(new C2SToggleTrackingPacket(region, islandName, currentlyTracked));
-                        if (currentlyTracked) {
-                            BTSLogPoseClient.unTrackIsland(region, islandName);
-                        } else {
-                            BTSLogPoseClient.trackIsland(region, islandName);
-                        }
-                    });
+                    trackingButtons[i] = new TrackingButton(i, guiLeft + 28 + 77 * i, guiTop + 132, 150/2, 74/2,
+                            736,39,150,74,background,backgroundTextureSizeX,backgroundTextureSizeY ,null,region,islandName);
 
                     List<String> discs = BTSLogPoseClient.discovered.get(region);
                     ResourceLocation image = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);

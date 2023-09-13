@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import tfar.btslogpose.BTSLogPose;
+import tfar.btslogpose.client.BTSLogPoseClient;
 import tfar.btslogpose.config.BTSIslandConfig;
 
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class S2CBTSIslandConfigPacket implements IMessage {
 
     private void handle(S2CBTSIslandConfigPacket message, MessageContext ctx) {
       // This code is run on the server side. So you can do server-side calculations here
-      Minecraft.getMinecraft().addScheduledTask(() -> BTSLogPose.configs.put(message.regionName, message.regionConfig));
+      Minecraft.getMinecraft().addScheduledTask(() -> BTSLogPoseClient.client_configs.put(message.regionName, message.regionConfig));
     }
   }
 }

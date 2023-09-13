@@ -56,6 +56,7 @@ public class BTSLogPose {
 
     @Mod.EventHandler
     public void shutdown(FMLServerStoppingEvent e) {
+        configs = null;
         BTSIslandManager.btsDiscoveryData = null;
     }
 

@@ -12,16 +12,16 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nullable;
 
 public class ImageButton extends GuiButton {
-    private final int uWidth;
-    private final int vHeight;
-    private final ResourceLocation resourceLocation;
-    private final int textureSizeX;
-    private final int textureSizeY;
+    protected final int uWidth;
+    protected final int vHeight;
+    protected final ResourceLocation resourceLocation;
+    protected final int textureSizeX;
+    protected final int textureSizeY;
 
     @Nullable
     private final String tooltipComponent;
-    private final int u;
-    private final int v;
+    protected int u;
+    protected int v;
 
     public ImageButton(int buttonId, int xIn, int yIn, int widthIn, int heightIn, int u, int v, ResourceLocation resource, int textureSizeX, int textureSizeY, String tooltipComponent) {
         this(buttonId, xIn,yIn,widthIn,heightIn,u,v,textureSizeX,textureSizeY,resource,textureSizeX,textureSizeY,tooltipComponent);
@@ -37,11 +37,6 @@ public class ImageButton extends GuiButton {
         this.textureSizeX = textureSizeX;
         this.textureSizeY = textureSizeY;
         this.tooltipComponent = tooltipComponent;
-    }
-
-    public void setPosition(int p_191746_1_, int p_191746_2_) {
-        this.x = p_191746_1_;
-        this.y = p_191746_2_;
     }
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {

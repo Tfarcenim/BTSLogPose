@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tfar.btslogpose.config.BTSIslandConfig;
 import tfar.btslogpose.world.BTSPing;
 
 import java.io.File;
@@ -39,6 +40,8 @@ public class BTSLogPoseClient {
     private static List<BTSPing> pings = new ArrayList<>();
     public static Map<String,List<String>> discovered = new HashMap<>();
     public static Map<String, Set<String>> trackedIslands = new HashMap<>();
+
+    public static Map<String,Map<String, BTSIslandConfig>> client_configs = new HashMap<>();
 
     public static void setPings(List<BTSPing> pings) {
         BTSLogPoseClient.pings = pings;

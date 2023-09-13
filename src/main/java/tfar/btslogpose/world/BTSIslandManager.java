@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import tfar.btslogpose.BTSLogPose;
 import tfar.btslogpose.config.BTSIslandConfig;
 import tfar.btslogpose.net.PacketHandler;
+import tfar.btslogpose.net.S2CBTSIslandClearConfigPacket;
 import tfar.btslogpose.net.S2CBTSIslandConfigPacket;
 
 import java.util.List;
@@ -25,9 +26,10 @@ public class BTSIslandManager {
     public static int commandCount;
 
     @SubscribeEvent
-    public static void playerTick(TickEvent.ServerTickEvent e) {
-        if (e.phase == TickEvent.Phase.START) {
-            WorldServer serverWorld = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(0);
+    public static void playerTick(TickEvent.WorldTickEvent e) {
+        if (e.phase == TickEvent.Phase.START && !e.world.isRemote) {
+            WorldServer serverWorld = (WorldServer) e.world;
+            WorldServer overWorld = serverWorld.getMinecraftServer().getWorld(0);
 
             for( Map.Entry<String,Map<String,BTSIslandConfig>> regionEntry : BTSLogPose.configs.entrySet()) {
                 String region = regionEntry.getKey();
@@ -35,7 +37,7 @@ public class BTSIslandManager {
                     String islandName = islandEntry.getKey();
                     BTSIslandConfig config = islandEntry.getValue();
                     List<EntityPlayerMP> players = serverWorld.getEntitiesWithinAABB(EntityPlayerMP.class, config.discovery.getOriginal(),
-                            (entityPlayer) -> !BTSIslandManager.hasDiscovered(region, islandName, entityPlayer, serverWorld));
+                            (entityPlayer) -> !BTSIslandManager.hasDiscovered(region, islandName, entityPlayer, overWorld));
                     for (EntityPlayerMP playerMP : players) {
                         System.out.println(playerMP + " discovered " + islandName);
                     //    discover(region, islandName, playerMP, serverWorld);
@@ -80,6 +82,7 @@ public class BTSIslandManager {
     }
 
     public static void sendIslandConfigsToClient(EntityPlayerMP player) {
+        PacketHandler.sendPacketToClient(new S2CBTSIslandClearConfigPacket(),player);
         for (Map.Entry<String, Map<String, BTSIslandConfig>> entry : BTSLogPose.configs.entrySet()) {
             String regionName = entry.getKey();
             Map<String,BTSIslandConfig> regionConfig = entry.getValue();
