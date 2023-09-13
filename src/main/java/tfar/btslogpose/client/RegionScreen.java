@@ -1,7 +1,10 @@
 package tfar.btslogpose.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.btslogpose.BTSLogPose;
@@ -55,8 +58,10 @@ public class RegionScreen extends ScaledGuiScreen {
 
         mapButtons(guiLeft,guiTop);
 
-        addButton(new GuiButton(LEFT_ARROW,guiLeft+80,guiTop+170,40,20,"<"));
-        addButton(new GuiButton(RIGHT_ARROW,guiLeft+180,guiTop+170,40,20,">"));
+        addButton(new ImageButton(LEFT_ARROW,guiLeft+59,guiTop+169,116/2,85/2,583,282,116,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
+        addButton(new ImageButton(RIGHT_ARROW,guiLeft+173,guiTop+169,116/2,85/2,583,197,116,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
+        addButton(new ImageButton(EXIT,guiLeft + 270,guiTop,47/2,45/2,740,1,47,45,
+                background,backgroundTextureSizeX,backgroundTextureSizeY,null));
     }
 
     private void mapButtons(int guiLeft,int guiTop) {
@@ -100,12 +105,16 @@ public class RegionScreen extends ScaledGuiScreen {
             switch (button.id) {
                 case LEFT_ARROW:
                     if (index >0) {
-                        index--;break;
-                    }
+                        index--;
+                    }break;
                 case RIGHT_ARROW:if (index + 3 < islandConfigMap.size()) {
-                    index++;break;
-                }
+                    index++;
+                }break;
+                case EXIT: Minecraft.getMinecraft().displayGuiScreen(null);return;
             }
+
+            if (islandConfigMap.size() < 4)return;
+
             for (int i = 0; i < 3;i++) {
                 buttonList.remove(imageButtons[i]);
                 buttonList.remove(trackingButtons[i]);
@@ -120,5 +129,29 @@ public class RegionScreen extends ScaledGuiScreen {
             mapButtons(guiLeft,guiTop);
 
         }
+    }
+
+    @Override
+    protected void drawForegroundLayer(int mouseX, int mouseY, float partialTicks) {
+        super.drawForegroundLayer(mouseX, mouseY, partialTicks);
+
+        int backGroundSizeX = (int) (getW() *backGroundScale);
+        int backGroundSizeY = (int) (backgroundTextureSizeY * backGroundScale);
+
+        int guiLeft = (this.width - backGroundSizeX) / 2;
+        int guiTop = (this.height - backGroundSizeY) / 2;
+
+        RenderHelper.disableStandardItemLighting();
+
+        for (GuiButton guibutton : this.buttonList)
+        {
+            if (guibutton.isMouseOver())
+            {
+                guibutton.drawButtonForegroundLayer(mouseX - guiLeft, mouseY - guiTop);
+                break;
+            }
+        }
+
+        RenderHelper.enableGUIStandardItemLighting();
     }
 }

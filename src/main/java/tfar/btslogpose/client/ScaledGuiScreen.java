@@ -23,6 +23,7 @@ public abstract class ScaledGuiScreen extends GuiScreen {
         drawDefaultBackground();
         drawBackgroundLayer(partialTicks, mouseX, mouseY);
         super.drawScreen(mouseX, mouseY, partialTicks);
+        drawForegroundLayer(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -46,5 +47,9 @@ public abstract class ScaledGuiScreen extends GuiScreen {
         int i = (this.width - backGroundSizeX) / 2;
         int j = (this.height - backGroundSizeY) / 2;
         drawScaledCustomSizeModalRect(i, j, 0, 0, w,backgroundTextureSizeY, backGroundSizeX, backGroundSizeY,backgroundTextureSizeX,backgroundTextureSizeY);
+    }
+
+    protected void drawForegroundLayer( int mouseX, int mouseY,float partialTicks) {
+
     }
 }

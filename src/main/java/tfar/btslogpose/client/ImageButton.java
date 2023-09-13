@@ -50,22 +50,24 @@ public class ImageButton extends GuiButton {
             mc.getTextureManager().bindTexture(this.resourceLocation);
             GlStateManager.disableDepth();
 
-
+            GlStateManager.enableBlend();
 
             drawScaledCustomSizeModalRect(x, y, u, v, uWidth,vHeight, width, height, textureSizeX, textureSizeY);
 
-            RenderHelper.disableStandardItemLighting();
 
-            if (hovered && tooltipComponent != null) {
-                GuiScreen screen = mc.currentScreen;
-                if (screen != null) {
-                    screen.drawHoveringText(I18n.format(tooltipComponent), mouseX, mouseY);
-                }
-            }
-
-            RenderHelper.enableGUIStandardItemLighting();
 
             GlStateManager.enableDepth();
+        }
+    }
+
+    @Override
+    public void drawButtonForegroundLayer(int mouseX, int mouseY) {
+        super.drawButtonForegroundLayer(mouseX, mouseY);
+        if (tooltipComponent != null) {
+            GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+            if (screen != null) {
+                screen.drawHoveringText(I18n.format(tooltipComponent), mouseX, mouseY);
+            }
         }
     }
 
