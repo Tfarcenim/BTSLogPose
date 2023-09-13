@@ -40,7 +40,7 @@ public class RegionScreen extends ScaledGuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-        
+
     }
 
     @Override
@@ -60,32 +60,6 @@ public class RegionScreen extends ScaledGuiScreen {
     }
 
     private void mapButtons(int guiLeft,int guiTop) {
-        int islandCount = islandConfigMap.size();
-        if (islandCount < 4) {
-            for (int i = 0; i < islandConfigMap.size();i++) {
-                Pair<String,BTSIslandConfig> pair = islandConfigMap.get(i);
-                String islandName = pair.getLeft();
-                BTSIslandConfig config = pair.getRight();
-                trackingButtons[i] = new TrackingButton(i,guiLeft+44 + 76 * i,guiTop+135,60,20,"",() -> {
-                    boolean currentlyTracked = BTSLogPoseClient.isIslandTracked(region,islandName);
-                    PacketHandler.sendPacketToServer(new C2SToggleTrackingPacket(region,islandName,currentlyTracked));
-                    if (currentlyTracked) {
-                        BTSLogPoseClient.unTrackIsland(region, islandName);
-                    } else {
-                        BTSLogPoseClient.trackIsland(region, islandName);
-                    }
-                });
-
-                List<String> discs = BTSLogPoseClient.discovered.get(region);
-                ResourceLocation image = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
-
-                imageButtons[i] = new ImageButton(i,32+ guiLeft + i  * 79, guiTop+61,64,64,0,0,image,512,512,
-                        "btslogpose.island."+islandName+".name");
-
-                addButton(imageButtons[i]);
-                addButton(trackingButtons[i]);
-            }
-        } else {
             for (int i = 0; i < 3;i++) {
                 int ind = index + i;
 
@@ -113,7 +87,6 @@ public class RegionScreen extends ScaledGuiScreen {
                     addButton(trackingButtons[i]);
                 }
             }
-        }
     }
 
     @Override

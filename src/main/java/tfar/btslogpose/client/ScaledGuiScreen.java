@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class ScaledGuiScreen extends GuiScreen {
 
+    protected final static int EXIT = 999;
     protected double backGroundScale = .5;
     protected final ResourceLocation background;
     protected final int backgroundTextureSizeX;
