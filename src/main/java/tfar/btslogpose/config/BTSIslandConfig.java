@@ -55,6 +55,14 @@ public class BTSIslandConfig {
         return btsIslandConfig;
     }
 
+    private static BTSIslandConfig makeShelltown(String region) {
+        BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
+        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/shelltown.png").toString();
+        btsIslandConfig.discovery = btsIslandConfig.discovery.offset(0,128,0);
+        btsIslandConfig.makeDefaultCommands(region,"shelltown");
+        return btsIslandConfig;
+    }
+
     private static final List<File> FILES;
 
     static  {
@@ -94,6 +102,8 @@ public class BTSIslandConfig {
                 Map<String, BTSIslandConfig> list = new HashMap<>();
                 list.put("alvida_hideout", makeAlvidaHideOut(filename.replace(".json","")));
                 list.put("foosha", makeFoosha(filename.replace(".json","")));
+                list.put("shelltown", makeShelltown(filename.replace(".json","")));
+                list.put("orangetown", makeShelltown(filename.replace(".json","")));
                 write(list,file);
                 LOGGER.info("Loading default config for "+file.getName());
                 mapMap.put(file.getName(),list);

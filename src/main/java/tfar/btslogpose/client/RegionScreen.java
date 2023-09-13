@@ -32,10 +32,17 @@ public class RegionScreen extends ScaledGuiScreen {
     int index = 0;
 
     private GuiButton[] trackingButtons = new GuiButton[3];
-    private ResourceLocation[] images = new ResourceLocation[3];
+    private ImageButton[] imageButtons = new ImageButton[3];
 
     private static final int LEFT_ARROW = 0x10000;
     private static final int RIGHT_ARROW = 0x10001;
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        
+    }
+
     @Override
     public void initGui() {
         super.initGui();
@@ -50,7 +57,6 @@ public class RegionScreen extends ScaledGuiScreen {
 
         addButton(new GuiButton(LEFT_ARROW,guiLeft+80,guiTop+170,40,20,"<"));
         addButton(new GuiButton(RIGHT_ARROW,guiLeft+180,guiTop+170,40,20,">"));
-
     }
 
     private void mapButtons(int guiLeft,int guiTop) {
@@ -71,22 +77,44 @@ public class RegionScreen extends ScaledGuiScreen {
                 });
 
                 List<String> discs = BTSLogPoseClient.discovered.get(region);
-                images[i] = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
+                ResourceLocation image = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
 
-                ImageButton imageButton = new ImageButton(i,32+ guiLeft + i  * 79, guiTop+61,64,64,0,0,images[i],512,512,
+                imageButtons[i] = new ImageButton(i,32+ guiLeft + i  * 79, guiTop+61,64,64,0,0,image,512,512,
                         "btslogpose.island."+islandName+".name");
 
-                addButton(imageButton);
-
-
+                addButton(imageButtons[i]);
                 addButton(trackingButtons[i]);
             }
         } else {
+            for (int i = 0; i < 3;i++) {
+                int ind = index + i;
 
+                if (ind < islandConfigMap.size()) {
+                    Pair<String, BTSIslandConfig> pair = islandConfigMap.get(ind);
+                    String islandName = pair.getLeft();
+                    BTSIslandConfig config = pair.getRight();
+                    trackingButtons[i] = new TrackingButton(i, guiLeft + 44 + 76 * i, guiTop + 135, 60, 20, "", () -> {
+                        boolean currentlyTracked = BTSLogPoseClient.isIslandTracked(region, islandName);
+                        PacketHandler.sendPacketToServer(new C2SToggleTrackingPacket(region, islandName, currentlyTracked));
+                        if (currentlyTracked) {
+                            BTSLogPoseClient.unTrackIsland(region, islandName);
+                        } else {
+                            BTSLogPoseClient.trackIsland(region, islandName);
+                        }
+                    });
+
+                    List<String> discs = BTSLogPoseClient.discovered.get(region);
+                    ResourceLocation image = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
+
+                    imageButtons[i] = new ImageButton(i, 32 + guiLeft + i * 79, guiTop + 61, 64, 64, 0, 0, image, 512, 512,
+                            "btslogpose.island." + islandName + ".name");
+
+                    addButton(imageButtons[i]);
+                    addButton(trackingButtons[i]);
+                }
+            }
         }
     }
-
-
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
@@ -97,31 +125,27 @@ public class RegionScreen extends ScaledGuiScreen {
             trackingButton.press.run();
         } else {
             switch (button.id) {
-                case RIGHT_ARROW:
+                case LEFT_ARROW:
+                    if (index >0) {
+                        index--;break;
+                    }
+                case RIGHT_ARROW:if (index + 3 < islandConfigMap.size()) {
+                    index++;break;
+                }
             }
-        }
-    }
-    protected void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        super.drawBackgroundLayer(partialTicks, mouseX, mouseY);
-
-
-        if (true)return;
-        int w = getW();
-
-        int backGroundSizeX = (int) (w *backGroundScale);
-        int backGroundSizeY = (int) (backgroundTextureSizeY * backGroundScale);
-
-        int i = (this.width - backGroundSizeX) / 2;
-        int j = (this.height - backGroundSizeY) / 2;
-
-        for (int i1 = 0 ; i1 < 3;i1++) {
-            ResourceLocation resourceLocation = images[i1];
-            if (resourceLocation != null) {
-                this.mc.getTextureManager().bindTexture(resourceLocation);
-                int iconSize = 512;
-                int screenSize = 64;
-                drawScaledCustomSizeModalRect(32+ i + i1  * 79, j+61, 0, 0, iconSize,iconSize, screenSize, screenSize,iconSize,iconSize);
+            for (int i = 0; i < 3;i++) {
+                buttonList.remove(imageButtons[i]);
+                buttonList.remove(trackingButtons[i]);
             }
+
+            int backGroundSizeX = (int) (getW() *backGroundScale);
+            int backGroundSizeY = (int) (backgroundTextureSizeY * backGroundScale);
+
+            int guiLeft = (this.width - backGroundSizeX) / 2;
+            int guiTop = (this.height - backGroundSizeY) / 2;
+
+            mapButtons(guiLeft,guiTop);
+
         }
     }
 }
