@@ -72,6 +72,13 @@ public class RegionScreen extends ScaledGuiScreen {
 
                 List<String> discs = BTSLogPoseClient.discovered.get(region);
                 images[i] = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
+
+                ImageButton imageButton = new ImageButton(i,32+ guiLeft + i  * 79, guiTop+61,64,64,0,0,images[i],512,512,
+                        "btslogpose.island."+islandName+".name");
+
+                addButton(imageButton);
+
+
                 addButton(trackingButtons[i]);
             }
         } else {
@@ -97,6 +104,8 @@ public class RegionScreen extends ScaledGuiScreen {
     protected void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         super.drawBackgroundLayer(partialTicks, mouseX, mouseY);
 
+
+        if (true)return;
         int w = getW();
 
         int backGroundSizeX = (int) (w *backGroundScale);
@@ -111,7 +120,7 @@ public class RegionScreen extends ScaledGuiScreen {
                 this.mc.getTextureManager().bindTexture(resourceLocation);
                 int iconSize = 512;
                 int screenSize = 64;
-                drawScaledCustomSizeModalRect(34+ i + i1  * 78, j+52, 0, 0, iconSize,iconSize, screenSize, screenSize,iconSize,iconSize);
+                drawScaledCustomSizeModalRect(32+ i + i1  * 79, j+61, 0, 0, iconSize,iconSize, screenSize, screenSize,iconSize,iconSize);
             }
         }
     }
