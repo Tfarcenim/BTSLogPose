@@ -1,13 +1,14 @@
-package tfar.btslogpose.client;
+package tfar.btslogpose.client.button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import tfar.btslogpose.client.BTSLogPoseClient;
 import tfar.btslogpose.net.C2SToggleTrackingPacket;
 import tfar.btslogpose.net.PacketHandler;
 
 public class TrackingButton extends ImageButton {
-    protected final Runnable press;
+    public final Runnable press;
     private final String region;
     private final String island;
 
@@ -17,7 +18,7 @@ public class TrackingButton extends ImageButton {
         this.press = createRunnable();
         this.region = region;
         this.island = island;
-        updateUVs();
+        updateUVs(false);
     }
 
     public Runnable createRunnable() {
@@ -29,15 +30,23 @@ public class TrackingButton extends ImageButton {
             } else {
                 BTSLogPoseClient.trackIsland(region, island);
             }
-            updateUVs();
+            updateUVs(false);
         };
     }
 
-    public void updateUVs() {
+    public void updateUVs(boolean pressed) {
         if (currentlyTracked()) {
-            setUV(UVs.UNTRACK);
+            if (pressed) {
+                setUV(UVs.UNTRACK_PRESSED);
+            } else {
+                setUV(UVs.UNTRACK);
+            }
         } else {
-            setUV(UVs.TRACK);
+            if (pressed) {
+                setUV(UVs.TRACK_PRESSED);
+            } else {
+                setUV(UVs.TRACK);
+            }
         }
     }
 
@@ -65,6 +74,10 @@ public class TrackingButton extends ImageButton {
 
             GlStateManager.enableBlend();
 
+            boolean pressed = mousePressed(mc, mouseX, mouseY);
+
+            updateUVs(pressed);
+
             drawScaledCustomSizeModalRect(x, y, u, v, uWidth,vHeight, width, height, textureSizeX, textureSizeY);
 
 
@@ -75,12 +88,12 @@ public class TrackingButton extends ImageButton {
 
     public enum UVs {
         TRACK(736,39),
-        TRACK_PRESSED(581,39),
+        TRACK_PRESSED(584,42),
         UNTRACK(580,377),
         UNTRACK_PRESSED(736,377);
 
-        private final int u;
-        private final int v;
+        final int u;
+        final int v;
 
         UVs(int u, int v) {
             this.u = u;

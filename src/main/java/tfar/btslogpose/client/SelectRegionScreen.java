@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
 import tfar.btslogpose.BTSLogPose;
+import tfar.btslogpose.client.button.ImageButton;
 
 import java.io.IOException;
 

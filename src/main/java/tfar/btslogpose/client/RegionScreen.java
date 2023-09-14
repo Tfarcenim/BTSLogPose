@@ -2,20 +2,18 @@ package tfar.btslogpose.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import tfar.btslogpose.BTSLogPose;
+import tfar.btslogpose.client.button.ArrowButton;
+import tfar.btslogpose.client.button.ImageButton;
+import tfar.btslogpose.client.button.TrackingButton;
 import tfar.btslogpose.config.BTSIslandConfig;
-import tfar.btslogpose.net.C2SToggleTrackingPacket;
-import tfar.btslogpose.net.PacketHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class RegionScreen extends ScaledGuiScreen {
 
@@ -58,8 +56,8 @@ public class RegionScreen extends ScaledGuiScreen {
 
         mapButtons(guiLeft,guiTop);
 
-        addButton(new ImageButton(LEFT_ARROW,guiLeft+59,guiTop+169,118/2,85/2,583,282,118,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
-        addButton(new ImageButton(RIGHT_ARROW,guiLeft+173,guiTop+169,118/2,85/2,583,197,118,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
+        addButton(new ArrowButton(LEFT_ARROW,guiLeft+59,guiTop+169,118/2,85/2,583,282,118,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
+        addButton(new ArrowButton(RIGHT_ARROW,guiLeft+173,guiTop+169,118/2,85/2,583,197,118,85,background,backgroundTextureSizeX,backgroundTextureSizeY,null));
         addButton(new ImageButton(EXIT,guiLeft + 270,guiTop,47/2,45/2,740,1,47,45,
                 background,backgroundTextureSizeX,backgroundTextureSizeY,null));
     }

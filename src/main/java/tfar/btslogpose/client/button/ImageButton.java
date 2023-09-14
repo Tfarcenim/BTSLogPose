@@ -1,4 +1,4 @@
-package tfar.btslogpose.client;
+package tfar.btslogpose.client.button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
