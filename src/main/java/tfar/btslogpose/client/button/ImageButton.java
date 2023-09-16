@@ -22,6 +22,7 @@ public class ImageButton extends GuiButton {
     private final String tooltipComponent;
     protected int u;
     protected int v;
+    protected boolean silent;
 
     public ImageButton(int buttonId, int xIn, int yIn, int widthIn, int heightIn, int u, int v, ResourceLocation resource, int textureSizeX, int textureSizeY, String tooltipComponent) {
         this(buttonId, xIn,yIn,widthIn,heightIn,u,v,textureSizeX,textureSizeY,resource,textureSizeX,textureSizeY,tooltipComponent);
@@ -37,6 +38,11 @@ public class ImageButton extends GuiButton {
         this.textureSizeX = textureSizeX;
         this.textureSizeY = textureSizeY;
         this.tooltipComponent = tooltipComponent;
+    }
+
+    public ImageButton setSilent() {
+        silent = true;
+        return this;
     }
 
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
@@ -68,6 +74,8 @@ public class ImageButton extends GuiButton {
 
     @Override
     public void playPressSound(SoundHandler soundHandlerIn) {
-        //super.playPressSound(soundHandlerIn);
+        if (!silent) {
+            super.playPressSound(soundHandlerIn);
+        }
     }
 }

@@ -38,11 +38,6 @@ public class RegionScreen extends ScaledGuiScreen {
     private static final int LEFT_ARROW = 0x10000;
     private static final int RIGHT_ARROW = 0x10001;
 
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
-    }
 
     @Override
     public void initGui() {
@@ -77,7 +72,7 @@ public class RegionScreen extends ScaledGuiScreen {
                     ResourceLocation image = discs != null && discs.contains(islandName) ? new ResourceLocation(config.discovered_icon) : new ResourceLocation(config.undiscovered_icon);
 
                     imageButtons[i] = new ImageButton(i, 32 + guiLeft + i * 79, guiTop + 61, 64, 64, 0, 0, image, 512, 512,
-                            "btslogpose.island." + islandName + ".name");
+                            "btslogpose.island." + islandName + ".name").setSilent();
 
                     addButton(imageButtons[i]);
                     addButton(trackingButtons[i]);

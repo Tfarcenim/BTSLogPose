@@ -36,12 +36,14 @@ public class SelectRegionScreen extends ScaledGuiScreen {
 
         int xStart = guiLeft + 30;
 
-        addButton(new ImageButton(2,xStart,y,bWidth,bHeight,592,4,uWidth,vHeight,
+        addButton(new ImageButton(2,xStart,y,bWidth,bHeight,592,133,uWidth,vHeight,
                 background,backgroundTextureSizeX,backgroundTextureSizeY,null));
         addButton(new ImageButton(1,xStart + space,y,bWidth,bHeight,592,68,uWidth,vHeight,
                 background,backgroundTextureSizeX,backgroundTextureSizeY,null));
-        addButton(new ImageButton(0,xStart + space * 2,y,bWidth,bHeight,592,133,uWidth,vHeight,
+        addButton(new ImageButton(0,xStart + space * 2,y,bWidth,bHeight,592,4,uWidth,vHeight,
                 background,backgroundTextureSizeX,backgroundTextureSizeY,null));
+
+
         addButton(new ImageButton(EXIT,guiLeft + 270,guiTop,47/2,45/2,740,1,47,45,
                 background,backgroundTextureSizeX,backgroundTextureSizeY,null));
     }
@@ -50,9 +52,9 @@ public class SelectRegionScreen extends ScaledGuiScreen {
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
         switch (button.id) {
-            case 0: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("east_blue.json"));break;
+            case 2: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("east_blue.json"));break;
             case 1: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("grand_line.json"));break;
-            case 2: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("new_world.json"));break;
+            case 0: Minecraft.getMinecraft().displayGuiScreen(new RegionScreen("new_world.json"));break;
             case EXIT:Minecraft.getMinecraft().displayGuiScreen(null);
         }
     }

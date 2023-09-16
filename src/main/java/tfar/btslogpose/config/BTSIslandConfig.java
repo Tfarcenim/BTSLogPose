@@ -33,55 +33,47 @@ public class BTSIslandConfig {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static BTSIslandConfig makeAlvidaHideOut(String region) {
-        BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
-        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/alvida_hideout.png").toString();
-        btsIslandConfig.discovery = new AABB(0,0,0,64,64,64);
-        btsIslandConfig.makeDefaultCommands(region,"alvida_hideout");
-        return btsIslandConfig;
-    }
-
     private void makeDefaultCommands(String region,String island) {
         command_on_track = "/btsping track %player "+island;
         command_on_untrack = "/btsping untrack %player "+island;
         command_on_discovery = "/btsisland discover "+region+" "+island+" %player";
     }
 
-    private static BTSIslandConfig makeFoosha(String region) {
-        BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
-        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/foosha.png").toString();
-        btsIslandConfig.discovery = new AABB(0,0,0,64,64,64).offset(0,64,0);
-        btsIslandConfig.makeDefaultCommands(region,"foosha");
-        return btsIslandConfig;
-    }
+    private static final String[] default_east_blue_islands = new String[]{"foosha","shelltown","orangetown","alvida_hideout","arlong_park","baratie","loguetown","syrup"};
+    private static final String[] default_grand_line_islands = new String[]{"alabasta","amazon_lily","drum_island","drum_island_2","enies_lobby",
+            "impeldown","laboon","little_garden","long_ring_long_land","marineford","saboady","thriller_bark","water_7","whiskey_peak"};
+    private static final String[] default_new_world_islands = new String[]{"dressrosa","fishman_island","mary_geoise","punk_hazard","whole_cake","zou"};
 
-    private static BTSIslandConfig makeShelltown(String region) {
-        BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
-        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/shelltown.png").toString();
-        btsIslandConfig.discovery = new AABB(0,0,0,64,64,64).offset(0,128,0);
-        btsIslandConfig.makeDefaultCommands(region,"shelltown");
-        return btsIslandConfig;
-    }
 
-    private static BTSIslandConfig makeOrangeTown(String region) {
+    private static BTSIslandConfig makeDefaultIsland(String region,String island) {
         BTSIslandConfig btsIslandConfig = new BTSIslandConfig();
-        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/orangetown.png").toString();
+        btsIslandConfig.discovered_icon = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/island/"+region+"/"+island+".png").toString();
         btsIslandConfig.discovery = new AABB(0,0,0,64,64,64).offset(0,192,0);
-        btsIslandConfig.makeDefaultCommands(region,"orangetown");
+        btsIslandConfig.makeDefaultCommands(region,island);
         return btsIslandConfig;
     }
+
 
     private static final List<File> FILES;
+    static final Map<String,String[]> defs;
+
 
     static  {
 
         FILES = new ArrayList<>();
+        defs = new HashMap<>();
         new File("config/btsregions/").mkdir();
         for (String s : BTSLogPose.REGIONS) {
             File file = new File("config/btsregions/" + s + ".json");
             FILES.add(file);
         }
+        defs.put("east_blue",default_east_blue_islands);
+        defs.put("grand_line",default_grand_line_islands);
+        defs.put("new_world",default_new_world_islands);
+
     }
+
+
 
     public void toNetwork(ByteBuf buf) {
         ByteBufUtils.writeUTF8String(buf,undiscovered_icon);
@@ -101,10 +93,13 @@ public class BTSIslandConfig {
             String filename = file.getName();
             if (!file.exists()) {
                 Map<String, BTSIslandConfig> list = new HashMap<>();
-                list.put("alvida_hideout", makeAlvidaHideOut(filename.replace(".json","")));
-                list.put("foosha", makeFoosha(filename.replace(".json","")));
-                list.put("shelltown", makeShelltown(filename.replace(".json","")));
-                list.put("orangetown", makeOrangeTown(filename.replace(".json","")));
+                String r = filename.replace(".json", "");
+
+                    String[] strings = defs.get(r);
+                    for (String s : strings) {
+                        list.put(s, makeDefaultIsland(r, s));
+                    }
+
                 write(list,file);
                 LOGGER.info("Loading default config for "+file.getName());
                 mapMap.put(file.getName(),list);
