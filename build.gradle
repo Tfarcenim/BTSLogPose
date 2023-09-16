@@ -19,7 +19,7 @@ apply plugin: 'eclipse'
 
 
 
-version = mod_version
+version = minecraft_version+"-"+mod_version
 group = mod_group
 archivesBaseName = mod_id
 
@@ -44,13 +44,13 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
+         //   arg '-torg.spongepowered.asm.launch.MixinTweaker'
         }
 
         server {
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            arg '-torg.spongepowered.asm.launch.MixinTweaker'
+           // arg '-torg.spongepowered.asm.launch.MixinTweaker'
         }
     }
 }
@@ -67,12 +67,12 @@ configurations {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
-        exclude module: 'guava'
-        exclude module: 'commons-io'
-        exclude module: 'gson'
-    }
-    annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
+  //  implementation('org.spongepowered:mixin:0.8.3-SNAPSHOT') {
+  //      exclude module: 'guava'
+  //      exclude module: 'commons-io'
+  //      exclude module: 'gson'
+  //  }
+ //   annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
 }
 
 processResources {
@@ -94,8 +94,8 @@ processResources {
 }
 
 mixin {
-    add sourceSets.main, mod_mixin_refmap.replace('${mod_id}', mod_id)
-    config mod_mixin_configs.replace('${mod_id}', mod_id)
+   // add sourceSets.main, mod_mixin_refmap.replace('${mod_id}', mod_id)
+    //config mod_mixin_configs.replace('${mod_id}', mod_id)
 }
 
 jar {
@@ -105,11 +105,11 @@ jar {
         exclude "LICENSE.txt", "META-INF/MANIFSET.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
     }
 
-    manifest {
-        attributes "ForceLoadAsMod": "true"
-        attributes "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
-        attributes "TweakOrder": "0"
-    }
+   // manifest {
+   //     attributes "ForceLoadAsMod": "true"
+   //     attributes "TweakClass": "org.spongepowered.asm.launch.MixinTweaker"
+   //     attributes "TweakOrder": "0"
+  //  }
 }
 
 jar.finalizedBy('reobfJar')

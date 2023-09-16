@@ -4,7 +4,6 @@
     "refmap": "refmap.btslogpose.json",
     "mixins": [],
     "client": [
-      "MixinMinecraft"
     ],
     "server": []
 }
