@@ -27,7 +27,7 @@ public class RegionScreen extends ScaledGuiScreen {
         super(BACK, 893,456);
         this.region = region;
         islandConfigMap = new ArrayList<>();
-        BTSLogPose.configs.get(region).entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue())).forEach(islandConfigMap::add);
+        BTSLogPoseClient.client_configs.get(region).entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue())).forEach(islandConfigMap::add);
     }
 
     int index = 0;

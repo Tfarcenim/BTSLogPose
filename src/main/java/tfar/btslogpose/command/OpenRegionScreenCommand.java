@@ -31,6 +31,11 @@ public class OpenRegionScreenCommand extends CommandBase {
     }
 
     @Override
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+        return true;
+    }
+
+    @Override
     public int getRequiredPermissionLevel() {
         return 0;
     }
