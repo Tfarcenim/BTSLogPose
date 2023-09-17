@@ -3,6 +3,7 @@ package tfar.btslogpose.command.pings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -23,12 +24,12 @@ public class BTSCreatePingCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands."+ BTSLogPose.MOD_ID+".btsping.usage";
+        return "commands.btsping.create.usage";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length > 0) {
+        if (args.length > 4) {
             int j = 0;
             String name = args[j++];
             Vec3d vec3d = sender.getPositionVector();
@@ -36,12 +37,15 @@ public class BTSCreatePingCommand extends CommandBase {
             CoordinateArg coordinateArgX = parseCoordinate(vec3d.x, args[j++], true);
             CoordinateArg coordinateArgY = parseCoordinate(vec3d.y, args[j++], false);
             CoordinateArg coordinateArgZ = parseCoordinate(vec3d.z, args[j++], true);
-            notifyCommandListener(sender, this, "commands.btsping.create.success.coordinates", coordinateArgX.getResult(), coordinateArgY.getResult(), coordinateArgZ.getResult());
+            notifyCommandListener(sender, this, "commands.btsping.create.success.coordinates",
+                    name, color,coordinateArgX.getResult(), coordinateArgY.getResult(), coordinateArgZ.getResult());
 
             BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(sender.getEntityWorld());
 
             btsPingSavedData.addPing(
                     BTSPing.of(new BlockPos(coordinateArgX.getResult(),coordinateArgY.getResult(),coordinateArgZ.getResult()),color,name));
+        } else {
+            throw new WrongUsageException("commands.btsping.create.usage");
         }
     }
 

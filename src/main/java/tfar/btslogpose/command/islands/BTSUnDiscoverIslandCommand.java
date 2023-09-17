@@ -3,6 +3,7 @@ package tfar.btslogpose.command.islands;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -24,7 +25,7 @@ public class BTSUnDiscoverIslandCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.btsislands.undiscover_island.usage";
+        return "commands.btsisland.undiscover.usage";
     }
 
     @Override
@@ -35,9 +36,16 @@ public class BTSUnDiscoverIslandCommand extends CommandBase {
             String island = args[j++];
             Entity entity = getEntity(server, sender, args[j++]);
             if (BTSLogPose.REGIONS.contains(region)) {
-                BTSIslandManager.undiscover(region+".json",island,(EntityPlayerMP) entity,server.getWorld(0));
-                notifyCommandListener(sender, this, "commands.btsislands.undiscover_island.success");
+                if ("*".equals(island)) {
+                    BTSIslandManager.undiscoverAll(region + ".json", (EntityPlayerMP) entity, server.getWorld(0));
+                    notifyCommandListener(sender, this, "commands.btsisland.undiscover_all.success",entity.getName());
+                } else {
+                    BTSIslandManager.undiscover(region + ".json", island, (EntityPlayerMP) entity, server.getWorld(0));
+                    notifyCommandListener(sender, this, "commands.btsisland.undiscover.success",entity.getName(),island,region);
+                }
             }
+        } else {
+            throw new WrongUsageException("commands.btsisland.undiscover.usage");
         }
     }
 

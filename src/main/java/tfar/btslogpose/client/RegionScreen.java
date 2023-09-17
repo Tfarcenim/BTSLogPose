@@ -2,6 +2,7 @@ package tfar.btslogpose.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -18,14 +19,16 @@ import java.util.List;
 public class RegionScreen extends ScaledGuiScreen {
 
     private final String region;
+    private final SelectRegionScreen lastScreen;
     private static final ResourceLocation BACK = new ResourceLocation(BTSLogPose.MOD_ID,"textures/gui/menu/gui_2.png");
 
 
     private final List<Pair<String, BTSIslandConfig>> islandConfigMap;
 
-    public RegionScreen(String region) {
+    public RegionScreen(String region,SelectRegionScreen lastScreen) {
         super(BACK, 893,456);
         this.region = region;
+        this.lastScreen = lastScreen;
         islandConfigMap = new ArrayList<>();
         BTSLogPoseClient.client_configs.get(region).entrySet().stream().map(entry -> Pair.of(entry.getKey(), entry.getValue())).forEach(islandConfigMap::add);
     }
@@ -96,7 +99,7 @@ public class RegionScreen extends ScaledGuiScreen {
                 case RIGHT_ARROW:if (index + 3 < islandConfigMap.size()) {
                     index++;
                 }break;
-                case EXIT: Minecraft.getMinecraft().displayGuiScreen(null);return;
+                case EXIT: mc.displayGuiScreen(null);return;
             }
 
             if (islandConfigMap.size() < 4)return;
@@ -118,14 +121,38 @@ public class RegionScreen extends ScaledGuiScreen {
     }
 
     @Override
-    protected void drawForegroundLayer(int mouseX, int mouseY, float partialTicks) {
-        super.drawForegroundLayer(mouseX, mouseY, partialTicks);
+    protected void drawBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        super.drawBackgroundLayer(partialTicks, mouseX, mouseY);
+        int u = 592;int v = 122;//right
+        int u2 = 639; int v2 = 123;//left
+        int w1= 36; int h = 55;//uv size
+        int width = w1/2;
+        int height = h/2;
 
-        int backGroundSizeX = (int) (getW() *backGroundScale);
+        int w = getW();
+
+        int backGroundSizeX = (int) (w *backGroundScale);
         int backGroundSizeY = (int) (backgroundTextureSizeY * backGroundScale);
 
-        int guiLeft = (this.width - backGroundSizeX) / 2;
-        int guiTop = (this.height - backGroundSizeY) / 2;
+        int i = (this.width - backGroundSizeX) / 2;
+        int j = (this.height - backGroundSizeY) / 2;
+
+        GlStateManager.enableBlend();
+
+        if (index > 0) {//left
+            drawScaledCustomSizeModalRect(i+7, j+80,  u2, v2,
+                    w1, h,(int) (w1 * backGroundScale), (int) (h * backGroundScale), backgroundTextureSizeX, backgroundTextureSizeY);
+        }
+
+        if (index < islandConfigMap.size() - 3) {//right
+            drawScaledCustomSizeModalRect(i+260, j+80,  u, v,
+                    w1, h,(int) (w1 * backGroundScale), (int) (h * backGroundScale), backgroundTextureSizeX, backgroundTextureSizeY);
+        }
+    }
+
+    @Override
+    protected void drawForegroundLayer(int mouseX, int mouseY, float partialTicks) {
+        super.drawForegroundLayer(mouseX, mouseY, partialTicks);
 
         RenderHelper.disableStandardItemLighting();
 
@@ -133,11 +160,20 @@ public class RegionScreen extends ScaledGuiScreen {
         {
             if (guibutton.isMouseOver())
             {
-                guibutton.drawButtonForegroundLayer(mouseX - guiLeft, mouseY - guiTop);
+                guibutton.drawButtonForegroundLayer(mouseX, mouseY);
                 break;
             }
         }
 
         RenderHelper.enableGUIStandardItemLighting();
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == 1) {
+            mc.displayGuiScreen(lastScreen);
+        } else {
+            super.keyTyped(typedChar, keyCode);
+        }
     }
 }

@@ -3,6 +3,7 @@ package tfar.btslogpose.client.button;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Mouse;
 import tfar.btslogpose.client.BTSLogPoseClient;
 import tfar.btslogpose.net.C2SToggleTrackingPacket;
 import tfar.btslogpose.net.PacketHandler;
@@ -74,7 +75,7 @@ public class TrackingButton extends ImageButton {
 
             GlStateManager.enableBlend();
 
-            boolean pressed = mousePressed(mc, mouseX, mouseY);
+            boolean pressed = mousePressed(mc, mouseX, mouseY) && Mouse.isButtonDown(0);
 
             updateUVs(pressed);
 

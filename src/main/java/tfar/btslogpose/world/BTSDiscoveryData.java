@@ -11,6 +11,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.common.util.Constants;
 import tfar.btslogpose.BTSLogPose;
+import tfar.btslogpose.config.BTSIslandConfig;
 import tfar.btslogpose.net.PacketHandler;
 import tfar.btslogpose.net.S2CBTSIslandDiscoveryPacket;
 
@@ -47,15 +48,52 @@ public class BTSDiscoveryData extends WorldSavedData {
         List<UUID> uuids = map.get(island);
 
         uuids.add(player.getPersistentID());
-        WorldServer world = (WorldServer) player.world;
-        MinecraftServer server = world.getMinecraftServer();
-       // server.getCommandManager().executeCommand(server, BTSLogPose.configs.get(region).get(island).run_command_when_ddiscovered);
         syncDiscoveries(player);
         markDirty();
     }
 
     public void unDiscover(String region, String island, EntityPlayerMP player) {
         discoveries.get(region).get(island).remove(player.getPersistentID());
+        syncDiscoveries(player);
+        markDirty();
+    }
+
+    public void discoverAll(String region, EntityPlayerMP player) {
+
+
+        if (!discoveries.containsKey(region)) {
+            discoveries.put(region,new HashMap<>());
+        }
+
+        Map<String,List<UUID>> map = discoveries.get(region);
+
+        Map<String, BTSIslandConfig> keys = BTSLogPose.configs.get(region);
+
+        if (keys != null) {
+            for (Map.Entry<String, BTSIslandConfig> entry : keys.entrySet()) {
+                String island = entry.getKey();
+                if (!map.containsKey(island)) {
+                    map.put(island, new ArrayList<>());
+                }
+                List<UUID> uuids = map.get(island);
+                uuids.add(player.getPersistentID());
+            }
+        }
+        syncDiscoveries(player);
+        markDirty();
+    }
+
+    public void unDiscoverAll(String region, EntityPlayerMP player) {
+
+        Map<String,List<UUID>> map = discoveries.get(region);
+
+        if (map != null) {
+            for (Map.Entry<String, List<UUID>> entry : map.entrySet()) {
+                List<UUID> uuids = entry.getValue();
+                uuids.remove(player.getPersistentID());
+            }
+        }
+
         syncDiscoveries(player);
         markDirty();
     }

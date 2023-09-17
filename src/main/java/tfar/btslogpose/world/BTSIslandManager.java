@@ -75,10 +75,21 @@ public class BTSIslandManager {
         data.discover(region,island,player);
     }
 
+    public static void discoverAll(String region, EntityPlayerMP player, WorldServer overworld) {
+        BTSDiscoveryData data = getOrCreateDiscoveryData(overworld);
+        data.discoverAll(region,player);
+    }
+
     public static void undiscover(String region,String island, EntityPlayerMP player, WorldServer overworld) {
         BTSDiscoveryData data = getOrCreateDiscoveryData(overworld);
         data.unDiscover(region,island,player);
     }
+
+    public static void undiscoverAll(String region,EntityPlayerMP player, WorldServer overworld) {
+        BTSDiscoveryData data = getOrCreateDiscoveryData(overworld);
+        data.unDiscoverAll(region,player);
+    }
+
 
     public static void sendIslandConfigsToClient(EntityPlayerMP player) {
         PacketHandler.sendPacketToClient(new S2CBTSIslandClearConfigPacket(),player);

@@ -183,16 +183,20 @@ public class BTSLogPoseClient {
 
     public static void renderTooltip3D(Minecraft mc, BTSPing ping,double partialTicks) {
         BlockPos pos = ping.getPos();
+
+
+        final double actualDistance = Minecraft.getMinecraft().player.getDistance(pos.getX(),pos.getY(),pos.getZ());
+
+        if (actualDistance < 10) return;
+
+        double viewDistance = actualDistance;
+        final double maxRenderDistance = mc.gameSettings.renderDistanceChunks * 16;
+
         ResourceLocation color = ping.getTex();
-        Minecraft.getMinecraft().getTextureManager().bindTexture(color);
         double xpos = mc.getRenderManager().viewerPosX - pos.getX();
         double ypos = mc.getRenderManager().viewerPosY - pos.getY();
         double zpos = mc.getRenderManager().viewerPosZ - pos.getZ();
 
-        final double actualDistance = Minecraft.getMinecraft().player.getDistance(pos.getX(),pos.getY(),pos.getZ());
-
-        double viewDistance = actualDistance;
-        final double maxRenderDistance = mc.gameSettings.renderDistanceChunks * 16;
         if (viewDistance > maxRenderDistance) {
             final Vec3d delta =new Vec3d(xpos,ypos,zpos).normalize();
             xpos = delta.x * maxRenderDistance;
@@ -204,7 +208,8 @@ public class BTSLogPoseClient {
         double scaleMultiplier = Math.max(1,actualDistance / maxRenderDistance);
         double scale = maxScale / scaleMultiplier;
 
-        double effectiveScale = maxScale / (Math.min(4,Math.sqrt(scaleMultiplier)));
+        double effectiveScale = maxScale / (Math.min(2,Math.sqrt(scaleMultiplier)));
+        Minecraft.getMinecraft().getTextureManager().bindTexture(color);
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-xpos, -ypos, -zpos);

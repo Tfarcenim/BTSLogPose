@@ -32,7 +32,6 @@ public class BTSLogPose {
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-
     }
 
     @Mod.EventHandler

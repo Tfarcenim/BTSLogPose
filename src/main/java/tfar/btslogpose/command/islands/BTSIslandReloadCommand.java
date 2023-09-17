@@ -19,7 +19,7 @@ public class BTSIslandReloadCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.btsislands.reload.usage";
+        return "commands.btsisland.reload.usage";
     }
 
     @Override
@@ -28,6 +28,6 @@ public class BTSIslandReloadCommand extends CommandBase {
         for (EntityPlayerMP playerMP : server.getPlayerList().getPlayers()) {
             BTSIslandManager.sendIslandConfigsToClient(playerMP);
         }
-        notifyCommandListener(sender, this, "commands.btsislands.reload.success");
+        notifyCommandListener(sender, this, "commands.btsisland.reload.success");
     }
 }

@@ -3,6 +3,7 @@ package tfar.btslogpose.command.pings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import tfar.btslogpose.BTSLogPose;
@@ -25,14 +26,18 @@ public class BTSDeletePingCommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 1) {
+        if (args.length > 0) {
             int j = 0;
             String name = args[j++];
             BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(sender.getEntityWorld());
             boolean worked = btsPingSavedData.removePingByName(sender.getEntityWorld(),name);
             if (worked) {
-                notifyCommandListener(sender, this, "commands.btsping.delete.success");
+                notifyCommandListener(sender, this, "commands.btsping.delete.success",name);
+            } else {
+                notifyCommandListener(sender, this, "commands.btsping.delete.failed",name);
             }
+        } else {
+            throw new WrongUsageException("commands.btsping.delete.usage");
         }
     }
 

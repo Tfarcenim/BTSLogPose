@@ -22,7 +22,7 @@ public class BTSIslandCommand extends CommandTreeBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "commands.island.usage";
+        return "commands.btsisland.usage";
     }
 
 }
