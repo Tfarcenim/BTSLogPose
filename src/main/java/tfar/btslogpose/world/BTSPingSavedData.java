@@ -45,15 +45,19 @@ public class BTSPingSavedData extends WorldSavedData {
     }
 
     public void track(BTSPing ping,EntityPlayerMP player) {
-        btsPings.get(ping).add(player.getPersistentID());
-        sendPings(player);
-        markDirty();
+        if (ping != null) {
+            btsPings.get(ping).add(player.getPersistentID());
+            sendPings(player);
+            markDirty();
+        }
     }
 
     public void untrack(BTSPing ping,EntityPlayerMP player) {
-        btsPings.get(ping).remove(player.getPersistentID());
-        sendPings(player);
-        markDirty();
+        if (ping != null) {
+            btsPings.get(ping).remove(player.getPersistentID());
+            sendPings(player);
+            markDirty();
+        }
     }
 
     public boolean isTracking(BTSPing ping,EntityPlayerMP player) {

@@ -22,6 +22,7 @@ public class PacketHandler {
     INSTANCE.registerMessage(S2CBTSIslandConfigPacket.Handler.class, S2CBTSIslandConfigPacket.class, 3, Side.CLIENT);
     INSTANCE.registerMessage(S2CBTSIslandClearConfigPacket.Handler.class, S2CBTSIslandClearConfigPacket.class, 4, Side.CLIENT);
     INSTANCE.registerMessage(C2SToggleTrackingPacket.Handler.class, C2SToggleTrackingPacket.class, 5, Side.SERVER);
+    INSTANCE.registerMessage(C2SUntrackPingPacket.Handler.class, C2SUntrackPingPacket.class, 6, Side.SERVER);
   }
 
   public static void sendPacketToAllClientsInDimension(IMessage pkt, int dim) {

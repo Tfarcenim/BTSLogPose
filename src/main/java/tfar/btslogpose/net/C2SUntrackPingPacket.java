@@ -12,42 +12,36 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tfar.btslogpose.BTSLogPose;
 import tfar.btslogpose.config.BTSIslandConfig;
+import tfar.btslogpose.world.BTSPing;
+import tfar.btslogpose.world.BTSPingSavedData;
 
 import java.util.Map;
 
 // not threadsafe!
-public class C2SToggleTrackingPacket implements IMessage {
+public class C2SUntrackPingPacket implements IMessage {
 
-  private String regionName;
   private String islandName;
-  private boolean currentlyTracked;
 
-  public C2SToggleTrackingPacket() {
+  public C2SUntrackPingPacket() {
   }
 
-  public C2SToggleTrackingPacket(String regionName, String islandName, boolean currentlyTracked) {
-    this.regionName = regionName;
+  public C2SUntrackPingPacket(String islandName) {
     this.islandName = islandName;
-    this.currentlyTracked = currentlyTracked;
   }
 
   @Override
   public void fromBytes(ByteBuf buf) {
-    regionName = ByteBufUtils.readUTF8String(buf);
     islandName = ByteBufUtils.readUTF8String(buf);
-    currentlyTracked = buf.readBoolean();
   }
 
   @Override
   public void toBytes(ByteBuf buf) {
-    ByteBufUtils.writeUTF8String(buf,regionName);
     ByteBufUtils.writeUTF8String(buf,islandName);
-    buf.writeBoolean(currentlyTracked);
   }
 
-  public static class Handler implements IMessageHandler<C2SToggleTrackingPacket, IMessage> {
+  public static class Handler implements IMessageHandler<C2SUntrackPingPacket, IMessage> {
     @Override
-    public IMessage onMessage(C2SToggleTrackingPacket message, MessageContext ctx) {
+    public IMessage onMessage(C2SUntrackPingPacket message, MessageContext ctx) {
       // Always use a construct like this to actually handle your message. This ensures that
       // youre 'handle' code is run on the main Minecraft thread. 'onMessage' itself
       // is called on the networking thread so it is not safe to do a lot of things
@@ -59,22 +53,15 @@ public class C2SToggleTrackingPacket implements IMessage {
     private static final Logger LOGGER = LogManager.getLogger();
 
     //need to make sure the server doesn't crash if the client sends bad packets
-    private void handle(C2SToggleTrackingPacket message, MessageContext ctx) {
+    private void handle(C2SUntrackPingPacket message, MessageContext ctx) {
       // This code is run on the server side. So you can do server-side calculations here
-      Map<String, BTSIslandConfig> stringBTSIslandConfigMap = BTSLogPose.configs.get(message.regionName);
-      if (stringBTSIslandConfigMap != null) {
-        BTSIslandConfig btsIslandConfig = stringBTSIslandConfigMap.get(message.islandName);
-        if (btsIslandConfig != null) {
-          EntityPlayerMP player = ctx.getServerHandler().player;
-          String rawCommand = message.currentlyTracked ? btsIslandConfig.command_on_untrack : btsIslandConfig.command_on_track;
-          rawCommand = rawCommand.replace("%player",player.getName());
-          MinecraftServer server = player.server;
-          server.getCommandManager().executeCommand(server,rawCommand);
-        } else {
-          LOGGER.warn("Island" + message.islandName +" not found in configs, ignoring");
-        }
+      EntityPlayerMP player = ctx.getServerHandler().player;
+      BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(player.getServerWorld());
+      BTSPing btsPing = btsPingSavedData.lookupByName(message.islandName);
+      if (btsPing != null) {
+        btsPingSavedData.untrack(btsPing,player);
       } else {
-        LOGGER.warn("Region " + message.regionName +" not found in configs, ignoring");
+        LOGGER.warn("Could not find ping " + message.islandName +", ignoring");
       }
     }
   }

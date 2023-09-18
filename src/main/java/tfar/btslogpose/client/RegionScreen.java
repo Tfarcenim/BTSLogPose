@@ -99,7 +99,7 @@ public class RegionScreen extends ScaledGuiScreen {
                 case RIGHT_ARROW:if (index + 3 < islandConfigMap.size()) {
                     index++;
                 }break;
-                case EXIT: mc.displayGuiScreen(null);return;
+                case EXIT:mc.displayGuiScreen(lastScreen);return;
             }
 
             if (islandConfigMap.size() < 4)return;

@@ -10,8 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -24,6 +26,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tfar.btslogpose.config.BTSIslandConfig;
+import tfar.btslogpose.net.C2SUntrackPingPacket;
+import tfar.btslogpose.net.PacketHandler;
 import tfar.btslogpose.world.BTSPing;
 
 import java.io.File;
@@ -49,6 +53,12 @@ public class BTSLogPoseClient {
 
     public static void setDiscoveries(String region,List<String> discovered) {
         BTSLogPoseClient.discovered.put(region,discovered);
+        Set<String> tracked = trackedIslands.get(region);
+        if (tracked != null) {
+            for (String s : discovered) {
+                tracked.remove(s);
+            }
+        }
     }
 
 
@@ -187,7 +197,11 @@ public class BTSLogPoseClient {
 
         final double actualDistance = Minecraft.getMinecraft().player.getDistance(pos.getX(),pos.getY(),pos.getZ());
 
-        if (actualDistance < 10) return;
+        if (actualDistance < 10) {
+            PacketHandler.sendPacketToServer(new C2SUntrackPingPacket(ping.getName()));
+            mc.player.world.playSound(mc.player,mc.player.getPosition(), SoundEvents.BLOCK_NOTE_CHIME, SoundCategory.MUSIC,1,1);
+            return;
+        }
 
         double viewDistance = actualDistance;
         final double maxRenderDistance = mc.gameSettings.renderDistanceChunks * 16;
