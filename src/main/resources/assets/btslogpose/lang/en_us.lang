@@ -2,6 +2,10 @@
 commands.btsping.create.usage=/btsping create <name> <color> <x> <y> <z>
 commands.btsping.create.success.coordinates=Created ping %s at %s, %s, %s, with color %s
 
+commands.btsping.track.usage=/btsping track <player> <name>
+commands.btsping.track.success=%s is now tracking %s ping
+
+
 commands.btsping.delete.usage=/btsping delete
 commands.btsping.delete.success=Deleted ping %s
 commands.btsping.delete.failed=Could not delete ping %s

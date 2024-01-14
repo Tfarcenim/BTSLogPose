@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.GlStateManager;
@@ -207,9 +208,9 @@ public class BTSLogPoseClient {
         final double maxRenderDistance = mc.gameSettings.renderDistanceChunks * 16;
 
         ResourceLocation color = ping.getTex();
-        double xpos = mc.getRenderManager().viewerPosX - pos.getX();
+        double xpos = mc.getRenderManager().viewerPosX - pos.getX() + .5;
         double ypos = mc.getRenderManager().viewerPosY - pos.getY();
-        double zpos = mc.getRenderManager().viewerPosZ - pos.getZ();
+        double zpos = mc.getRenderManager().viewerPosZ - pos.getZ() + .5;
 
         if (viewDistance > maxRenderDistance) {
             final Vec3d delta =new Vec3d(xpos,ypos,zpos).normalize();
@@ -220,9 +221,8 @@ public class BTSLogPoseClient {
         }
         final double maxScale = 1/20f;
         double scaleMultiplier = Math.max(1,actualDistance / maxRenderDistance);
-        double scale = maxScale / scaleMultiplier;
 
-        double effectiveScale = maxScale / (Math.min(2,Math.sqrt(scaleMultiplier)));
+        double effectiveScale = maxScale / (Math.min(1/3f,scaleMultiplier));
         Minecraft.getMinecraft().getTextureManager().bindTexture(color);
 
         GlStateManager.pushMatrix();
@@ -232,6 +232,11 @@ public class BTSLogPoseClient {
         GlStateManager.scale(effectiveScale, -effectiveScale, effectiveScale);
         GlStateManager.disableDepth();
         Gui.drawModalRectWithCustomSizedTexture(0,0,0,0,128,128,128,128);
+        GlStateManager.scale(5,5,5);
+        String distance = (int)actualDistance +"";
+        FontRenderer font  = Minecraft.getMinecraft().fontRenderer;
+        int strWidth = font.getStringWidth(distance);
+        font.drawString(distance,14 - strWidth / 2f,-5,0xffffff,false);
         GlStateManager.enableDepth();
         GlStateManager.popMatrix();
     }

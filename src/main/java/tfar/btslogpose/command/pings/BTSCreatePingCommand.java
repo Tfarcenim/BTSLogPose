@@ -29,14 +29,30 @@ public class BTSCreatePingCommand extends CommandBase {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length > 4) {
+
+        if (args.length > 1) {
             int j = 0;
-            String name = args[j++];
+            String name = args[j++];//0
             Vec3d vec3d = sender.getPositionVector();
-            String color = args[j++];
-            CoordinateArg coordinateArgX = parseCoordinate(vec3d.x, args[j++], true);
-            CoordinateArg coordinateArgY = parseCoordinate(vec3d.y, args[j++], false);
-            CoordinateArg coordinateArgZ = parseCoordinate(vec3d.z, args[j++], true);
+            String color = args[j++];//1
+
+            CoordinateArg coordinateArgX;
+            CoordinateArg coordinateArgY;
+            CoordinateArg coordinateArgZ;
+
+            if (args.length > 4) {
+                coordinateArgX = parseCoordinate(vec3d.x, args[j++], true);//2
+                coordinateArgY = parseCoordinate(vec3d.y, args[j++], false);//3
+                coordinateArgZ = parseCoordinate(vec3d.z, args[j++], true);//4
+            } else {
+                BlockPos pos = sender.getPosition();
+                coordinateArgX = parseCoordinate(vec3d.x, pos.getX()+"", true);//2
+                coordinateArgY = parseCoordinate(vec3d.y, pos.getY()+"", false);//3
+                coordinateArgZ = parseCoordinate(vec3d.z, pos.getZ()+"", true);//4
+            }
+
+
+
             notifyCommandListener(sender, this, "commands.btsping.create.success.coordinates",
                     name, color,coordinateArgX.getResult(), coordinateArgY.getResult(), coordinateArgZ.getResult());
 
@@ -45,7 +61,7 @@ public class BTSCreatePingCommand extends CommandBase {
             btsPingSavedData.addPing(
                     BTSPing.of(new BlockPos(coordinateArgX.getResult(),coordinateArgY.getResult(),coordinateArgZ.getResult()),color,name));
         } else {
-            throw new WrongUsageException("commands.btsping.create.usage");
+            throw new WrongUsageException(getUsage(sender));
         }
     }
 
