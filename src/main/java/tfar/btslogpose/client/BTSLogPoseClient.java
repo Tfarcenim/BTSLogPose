@@ -11,10 +11,12 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -195,7 +197,6 @@ public class BTSLogPoseClient {
     public static void renderTooltip3D(Minecraft mc, BTSPing ping,double partialTicks) {
         BlockPos pos = ping.getPos();
 
-
         final double actualDistance = Minecraft.getMinecraft().player.getDistance(pos.getX(),pos.getY(),pos.getZ());
 
         if (actualDistance < 10) {
@@ -217,9 +218,8 @@ public class BTSLogPoseClient {
             xpos = delta.x * maxRenderDistance;
             ypos = delta.y * maxRenderDistance;
             zpos = delta.z * maxRenderDistance;
-            viewDistance = maxRenderDistance;
         }
-        final double maxScale = 1/20f;
+        final double maxScale = .03f;
         double scaleMultiplier = Math.max(1,actualDistance / maxRenderDistance);
 
         double effectiveScale = maxScale / (Math.min(1/3f,scaleMultiplier));
@@ -227,16 +227,19 @@ public class BTSLogPoseClient {
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-xpos, -ypos, -zpos);
+
         GlStateManager.rotate(-mc.getRenderManager().playerViewY + 180, 0, 1, 0);
         GlStateManager.rotate(-mc.getRenderManager().playerViewX, 1, 0, 0);
         GlStateManager.scale(effectiveScale, -effectiveScale, effectiveScale);
         GlStateManager.disableDepth();
-        Gui.drawModalRectWithCustomSizedTexture(0,0,0,0,128,128,128,128);
-        GlStateManager.scale(5,5,5);
+        Gui.drawModalRectWithCustomSizedTexture(-64,-128,0,0,128,128,128,128);
+
+        float txtScale = 4.5f;
+        GlStateManager.scale(txtScale,txtScale,txtScale);
         String distance = (int)actualDistance +"";
         FontRenderer font  = Minecraft.getMinecraft().fontRenderer;
         int strWidth = font.getStringWidth(distance);
-        font.drawString(distance,14 - strWidth / 2f,-5,0xffffff,false);
+        font.drawString(distance,- strWidth / 2f + .5f,-20,0xffffff,false);
         GlStateManager.enableDepth();
         GlStateManager.popMatrix();
     }
