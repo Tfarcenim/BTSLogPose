@@ -2,7 +2,6 @@ package tfar.btslogpose.net;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -10,33 +9,29 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import tfar.btslogpose.BTSLogPose;
-import tfar.btslogpose.config.BTSIslandConfig;
 import tfar.btslogpose.world.BTSPing;
 import tfar.btslogpose.world.BTSPingSavedData;
-
-import java.util.Map;
 
 // not threadsafe!
 public class C2SUntrackPingPacket implements IMessage {
 
-  private String islandName;
+  private String pingName;
 
   public C2SUntrackPingPacket() {
   }
 
-  public C2SUntrackPingPacket(String islandName) {
-    this.islandName = islandName;
+  public C2SUntrackPingPacket(String pingName) {
+    this.pingName = pingName;
   }
 
   @Override
   public void fromBytes(ByteBuf buf) {
-    islandName = ByteBufUtils.readUTF8String(buf);
+    pingName = ByteBufUtils.readUTF8String(buf);
   }
 
   @Override
   public void toBytes(ByteBuf buf) {
-    ByteBufUtils.writeUTF8String(buf,islandName);
+    ByteBufUtils.writeUTF8String(buf, pingName);
   }
 
   public static class Handler implements IMessageHandler<C2SUntrackPingPacket, IMessage> {
@@ -57,11 +52,11 @@ public class C2SUntrackPingPacket implements IMessage {
       // This code is run on the server side. So you can do server-side calculations here
       EntityPlayerMP player = ctx.getServerHandler().player;
       BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(player.getServerWorld());
-      BTSPing btsPing = btsPingSavedData.lookupByName(message.islandName);
+      BTSPing btsPing = btsPingSavedData.lookupByName(message.pingName);
       if (btsPing != null) {
         btsPingSavedData.untrack(btsPing,player);
       } else {
-        LOGGER.warn("Could not find ping " + message.islandName +", ignoring");
+        LOGGER.warn("Could not find ping " + message.pingName +", ignoring");
       }
     }
   }

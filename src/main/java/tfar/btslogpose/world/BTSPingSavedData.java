@@ -12,6 +12,7 @@ import net.minecraftforge.common.util.Constants;
 import tfar.btslogpose.BTSLogPose;
 import tfar.btslogpose.net.PacketHandler;
 import tfar.btslogpose.net.S2CBTSPingPacket;
+import tfar.btslogpose.net.S2CUntrackIslandPacket;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -56,6 +57,7 @@ public class BTSPingSavedData extends WorldSavedData {
         if (ping != null) {
             btsPings.get(ping).remove(player.getPersistentID());
             sendPings(player);
+            PacketHandler.sendPacketToClient(new S2CUntrackIslandPacket(ping.getName()),player);
             markDirty();
         }
     }

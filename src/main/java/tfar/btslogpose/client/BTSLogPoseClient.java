@@ -54,6 +54,13 @@ public class BTSLogPoseClient {
         BTSLogPoseClient.pings = pings;
     }
 
+    public static void untrackIsland(String island) {
+        for (Map.Entry<String, Set<String>> regionToIsland : trackedIslands.entrySet()) {
+            Set<String> islands = regionToIsland.getValue();
+            islands.remove(island);
+        }
+    }
+
     public static void setDiscoveries(String region,List<String> discovered) {
         BTSLogPoseClient.discovered.put(region,discovered);
         Set<String> tracked = trackedIslands.get(region);

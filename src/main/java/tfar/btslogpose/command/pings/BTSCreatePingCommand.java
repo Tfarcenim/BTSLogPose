@@ -44,17 +44,19 @@ public class BTSCreatePingCommand extends CommandBase {
                 coordinateArgX = parseCoordinate(vec3d.x, args[j++], true);//2
                 coordinateArgY = parseCoordinate(vec3d.y, args[j++], false);//3
                 coordinateArgZ = parseCoordinate(vec3d.z, args[j++], true);//4
-            } else {
+            } else if (args.length == 2){
                 BlockPos pos = sender.getPosition();
                 coordinateArgX = parseCoordinate(vec3d.x, pos.getX()+"", true);//2
                 coordinateArgY = parseCoordinate(vec3d.y, pos.getY()+"", false);//3
                 coordinateArgZ = parseCoordinate(vec3d.z, pos.getZ()+"", true);//4
+            } else {
+                throw new WrongUsageException(getUsage(sender));
             }
 
 
 
             notifyCommandListener(sender, this, "commands.btsping.create.success.coordinates",
-                    name, color,coordinateArgX.getResult(), coordinateArgY.getResult(), coordinateArgZ.getResult());
+                    name, coordinateArgX.getResult(), coordinateArgY.getResult(), coordinateArgZ.getResult(),color);
 
             BTSPingSavedData btsPingSavedData = BTSPingSavedData.getOrCreate(sender.getEntityWorld());
 
