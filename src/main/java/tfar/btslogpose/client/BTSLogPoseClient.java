@@ -226,7 +226,7 @@ public class BTSLogPoseClient {
             ypos = delta.y * maxRenderDistance;
             zpos = delta.z * maxRenderDistance;
         }
-        final double maxScale = .03f;
+        final double maxScale = .045f;
         double scaleMultiplier = Math.max(1,actualDistance / maxRenderDistance);
 
         double effectiveScale = maxScale / (Math.min(1/3f,scaleMultiplier));

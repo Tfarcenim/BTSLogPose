@@ -17,7 +17,7 @@ public class PacketHandler {
     INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(BTSLogPose.MOD_ID);
     int i = 0;
     // Register messages which are sent from the client to the server here:
-    INSTANCE.registerMessage(S2CBTSPingPacket.Handler.class, S2CBTSPingPacket.class, i++, Side.CLIENT);
+    INSTANCE.registerMessage(S2CUntrackIslandPacket.Handler.class, S2CUntrackIslandPacket.class, i++, Side.CLIENT);
     INSTANCE.registerMessage(S2CBTSPingPacket.Handler.class, S2CBTSPingPacket.class, i++, Side.CLIENT);
     INSTANCE.registerMessage(S2COpenRegionScreenPacket.Handler.class, S2COpenRegionScreenPacket.class, i++, Side.CLIENT);
     INSTANCE.registerMessage(S2CBTSIslandDiscoveryPacket.Handler.class, S2CBTSIslandDiscoveryPacket.class, i++, Side.CLIENT);
