@@ -15,5 +15,6 @@ commands.btsisland.discover.success=%s has discovered island %s in region %s
 commands.btsisland.discover_all.success=%s has discovered all islands in region %s
 
 commands.btsisland.undiscover.usage=/btsisland undiscover <region> <island> <player>
-commands.btsisland.undiscover.success=%s has discovered island %s in region %s
+commands.btsisland.undiscover.success=%s has undiscovered island %s in region %s
+commands.btsisland.undiscover.fail=%s has never discovered island %s in region %s
 commands.btsisland.undiscover_all.success=%s has undiscovered all islands in region %s

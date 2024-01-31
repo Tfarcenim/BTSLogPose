@@ -40,8 +40,8 @@ public class BTSUnDiscoverIslandCommand extends CommandBase {
                     BTSIslandManager.undiscoverAll(region + ".json", (EntityPlayerMP) entity, server.getWorld(0));
                     notifyCommandListener(sender, this, "commands.btsisland.undiscover_all.success",entity.getName());
                 } else {
-                    BTSIslandManager.undiscover(region + ".json", island, (EntityPlayerMP) entity, server.getWorld(0));
-                    notifyCommandListener(sender, this, "commands.btsisland.undiscover.success",entity.getName(),island,region);
+                    boolean worked = BTSIslandManager.undiscover(region + ".json", island, (EntityPlayerMP) entity, server.getWorld(0));
+                    notifyCommandListener(sender, this, "commands.btsisland.undiscover." + (worked ? "success" : "fail"),entity.getName(),island,region);
                 }
             }
         } else {

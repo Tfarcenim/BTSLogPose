@@ -38,7 +38,7 @@ public class BTSIslandManager {
                     List<EntityPlayerMP> players = serverWorld.getEntitiesWithinAABB(EntityPlayerMP.class, config.discovery.getOriginal(),
                             (entityPlayer) -> !BTSIslandManager.hasDiscovered(region, islandName, entityPlayer, overWorld));
                     for (EntityPlayerMP playerMP : players) {
-                        System.out.println(playerMP + " discovered " + islandName);
+                    //    System.out.println(playerMP + " discovered " + islandName);
                     //    discover(region, islandName, playerMP, serverWorld);
                         MinecraftServer server = serverWorld.getMinecraftServer();
                         try {
@@ -80,9 +80,9 @@ public class BTSIslandManager {
         data.discoverAll(region,player);
     }
 
-    public static void undiscover(String region,String island, EntityPlayerMP player, WorldServer overworld) {
+    public static boolean undiscover(String region,String island, EntityPlayerMP player, WorldServer overworld) {
         BTSDiscoveryData data = getOrCreateDiscoveryData(overworld);
-        data.unDiscover(region,island,player);
+        return data.unDiscover(region,island,player);
     }
 
     public static void undiscoverAll(String region,EntityPlayerMP player, WorldServer overworld) {

@@ -52,10 +52,18 @@ public class BTSDiscoveryData extends WorldSavedData {
         markDirty();
     }
 
-    public void unDiscover(String region, String island, EntityPlayerMP player) {
-        discoveries.get(region).get(island).remove(player.getPersistentID());
-        syncDiscoveries(player);
-        markDirty();
+    public boolean unDiscover(String region, String island, EntityPlayerMP player) {
+        Map<String,List<UUID>> map = discoveries.get(region);
+        List<UUID> uuids = map.get(island);
+        boolean removed = false;
+        if (uuids != null) {
+            removed = uuids.remove(player.getPersistentID());
+        }
+        if (removed) {
+            syncDiscoveries(player);
+            markDirty();
+        }
+        return removed;
     }
 
     public void discoverAll(String region, EntityPlayerMP player) {
